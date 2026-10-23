@@ -6,6 +6,7 @@
 
 - [ ] Confirm the flows (install, turn on, try mode, themes, undo, restore) on a clean Windows 11 VM and fix every `UNVERIFIED` item in the manifests that the release depends on.
 - [ ] Make the repository public and enable *Private vulnerability reporting* (Security tab).
+- [ ] Upload the social preview image (Settings → General → Social preview; GitHub only offers it on public repositories): `branding/social-preview.png` for WinRice. The same for the sibling repositories once they are public.
 - [ ] Enable GitHub Pages with source *GitHub Actions* (for the landing page in `site/`).
 - [ ] Decide about code signing. Without a certificate Windows SmartScreen warns on the installer; say so in the release notes.
 
