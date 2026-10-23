@@ -1,0 +1,48 @@
+id: komorebi
+name: "Komorebi"
+category: window-manager
+summary:
+  en: "Lightweight tiling window manager controlled from the command line."
+  pt-BR: "Gerenciador de janelas em mosaico leve, controlado pela linha de comando."
+difficulty: advanced
+homepage: https://github.com/LGUG2Z/komorebi
+license: "Komorebi License"
+restricted_license: true
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: LGUG2Z.komorebi
+uninstall:
+  method: winget
+detect:
+  process: komorebi.exe
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles%\komorebi\bin\komorebi.exe'
+    - '%ProgramFiles%\komorebi\bin\komorebic.exe'
+activate:
+  start: "komorebic.exe start"
+  autostart: true
+deactivate:
+  stop: "komorebic.exe stop"
+  remove_autostart: true
+config:
+  paths:
+    - '%USERPROFILE%\komorebi.json'
+  format: json
+  backup: true
+conflicts: [glazewm]
+pairs_well_with: [yasb]
+changes_on_screen:
+  - en: "Windows are arranged automatically in a grid."
+    pt-BR: "As janelas são organizadas automaticamente numa grade."
+shortcuts: []
+risks:
+  en: "The license restricts commercial use: check it before using at work. Config is manual JSON."
+  pt-BR: "A licença restringe uso comercial: confira antes de usar no trabalho. A configuração é manual, em JSON."
+how_to_undo:
+  en: "Turn off the toggle (runs komorebic stop)."
+  pt-BR: "Desative no toggle (executa komorebic stop)."

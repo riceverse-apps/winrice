@@ -1,0 +1,53 @@
+name: Release
+
+# Run by pushing a tag such as v0.1.0 (see docs/publishing.md).
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows-installer:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Validate catalog and tests
+        shell: bash
+        run: |
+          npm install
+          npm run validate
+          cargo test --manifest-path app/src-tauri/Cargo.toml
+
+      - name: Build installer
+        shell: bash
+        run: |
+          npm install --prefix app
+          npm --prefix app run tauri -- build --bundles nsis
+
+      - name: Checksum and winget manifests
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          EXE=$(ls app/src-tauri/target/release/bundle/nsis/*-setup.exe | head -n 1)
+          SHA=$(sha256sum "$EXE" | cut -d' ' -f1)
+          echo "$SHA  $(basename "$EXE")" > "$EXE.sha256"
+          node scripts/make-winget.mjs --version "$VERSION" \
+            --url "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/$(basename "$EXE")" \
+            --sha256 "$SHA"
+          cd packaging/winget/out && zip -r ../../../winget-manifests.zip manifests
+          echo "EXE=$EXE" >> "$GITHUB_ENV"
+
+      - name: Create the GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$EXE" "$EXE.sha256" winget-manifests.zip \
+            --title "WinRice $GITHUB_REF_NAME" \
+            --notes "Unsigned installer: Windows SmartScreen may warn. SHA-256 is in the .sha256 file. See docs/publishing.md for the winget manifests."

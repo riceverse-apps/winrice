@@ -1,0 +1,34 @@
+id: nilesoft-shell
+name: "Nilesoft Shell"
+category: shell-mod
+summary:
+  en: "Customizable right-click (context) menu."
+  pt-BR: "Menu de contexto (botão direito) personalizável."
+difficulty: advanced
+homepage: https://nilesoft.org/
+license: "MIT"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: true
+install:
+  method: winget
+  id: Nilesoft.Shell
+uninstall:
+  method: winget
+detect:
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles%\Nilesoft Shell\shell.exe'
+conflicts: []
+pairs_well_with: []
+changes_on_screen:
+  - en: "The right-click menu is replaced by a configurable one."
+    pt-BR: "O menu do botão direito é trocado por um configurável."
+shortcuts: []
+risks:
+  en: "Changes how Explorer loads the context menu and needs admin. No on/off toggle here yet."
+  pt-BR: "Muda como o Explorer carrega o menu de contexto e exige administrador. Sem toggle aqui por enquanto."
+how_to_undo:
+  en: "Uninstall it from the tool page."
+  pt-BR: "Desinstale pela página da ferramenta."

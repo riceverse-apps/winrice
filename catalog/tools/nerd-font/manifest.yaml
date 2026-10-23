@@ -1,0 +1,35 @@
+id: nerd-font
+name: "Nerd Fonts (JetBrainsMono)"
+category: terminal
+summary:
+  en: "Font with the icons that prompts and bars need."
+  pt-BR: "Fonte com os ícones que prompts e barras precisam."
+difficulty: beginner
+homepage: https://www.nerdfonts.com/
+license: "OFL-1.1"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: DEVCOM.JetBrainsMonoNerdFont
+uninstall:
+  method: winget
+detect:
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%LOCALAPPDATA%\Microsoft\Windows\Fonts\JetBrainsMonoNerdFont-Regular.ttf'
+    - '%WINDIR%\Fonts\JetBrainsMonoNerdFont-Regular.ttf'
+conflicts: []
+pairs_well_with: [windows-terminal, oh-my-posh, starship, yasb]
+changes_on_screen:
+  - en: "Nothing changes by itself; after you pick the font in your terminal, icons show correctly."
+    pt-BR: "Nada muda sozinho; depois de escolher a fonte no terminal, os ícones aparecem corretamente."
+shortcuts: []
+risks:
+  en: "No risk. Only JetBrainsMono is offered for now (CaskaydiaCove comes later)."
+  pt-BR: "Sem risco. Por enquanto só a JetBrainsMono é oferecida (a CaskaydiaCove vem depois)."
+how_to_undo:
+  en: "Uninstall it from the tool page."
+  pt-BR: "Desinstale pela página da ferramenta."

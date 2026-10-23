@@ -1,0 +1,48 @@
+id: starship
+name: "Starship"
+category: terminal
+summary:
+  en: "Fast, minimal prompt for PowerShell."
+  pt-BR: "Prompt rápido e minimalista para o PowerShell."
+difficulty: beginner
+homepage: https://starship.rs/
+license: "ISC"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: Starship.Starship
+uninstall:
+  method: winget
+detect:
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles%\starship\bin\starship.exe'
+activate:
+  profile_snippet:
+    files:
+      - '%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+      - '%USERPROFILE%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'
+    content: 'Invoke-Expression (&starship init powershell)'
+deactivate:
+  remove_autostart: false
+config:
+  paths:
+    - '%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+    - '%USERPROFILE%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'
+  format: powershell
+  backup: true
+conflicts: [oh-my-posh]
+pairs_well_with: [windows-terminal, nerd-font]
+changes_on_screen:
+  - en: "The PowerShell prompt shows folder, git branch and language versions."
+    pt-BR: "O prompt do PowerShell mostra pasta, branch do git e versões de linguagens."
+shortcuts: []
+risks:
+  en: "Edits your PowerShell profile (backed up first). Only one prompt tool can be on at a time."
+  pt-BR: "Edita seu perfil do PowerShell (com backup antes). Só uma ferramenta de prompt pode ficar ligada."
+how_to_undo:
+  en: "Turn off the toggle; the added lines are removed."
+  pt-BR: "Desative no toggle; as linhas adicionadas são removidas."

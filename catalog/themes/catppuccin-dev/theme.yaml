@@ -1,0 +1,38 @@
+id: catppuccin-dev
+name: "Catppuccin Dev"
+author:
+  name: "WinRice"
+  github: riceverse-apps
+version: 1.0.0
+license: MIT
+description:
+  en: "Keyboard-driven dev setup with Catppuccin Mocha colors: tiling windows, a status bar and a pretty terminal prompt."
+  pt-BR: "Setup de dev controlado pelo teclado, com cores Catppuccin Mocha: janelas em mosaico, barra de status e um prompt bonito no terminal."
+tags: [dev, tiling, dark, catppuccin, minimal]
+difficulty: intermediate
+requires:
+  windows_min_build: 22621
+palette:
+  name: catppuccin-mocha
+  colors:
+    base: "#1e1e2e"
+    text: "#cdd6f4"
+    accent: "#cba6f7"
+    red: "#f38ba8"
+components:
+  - tool: glazewm
+    settings:
+      "gaps.inner_gap": 12
+    required: true
+  - tool: zebar
+    required: true
+  - tool: windhawk
+    # Windhawk mod management is not supported yet: mods are listed here and skipped.
+    mods:
+      - id: windows-11-taskbar-styler
+    required: false
+  - tool: oh-my-posh
+    required: false
+  - tool: nerd-font
+    font: JetBrainsMono
+    required: true

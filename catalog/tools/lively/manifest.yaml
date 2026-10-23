@@ -1,0 +1,41 @@
+id: lively
+name: "Lively Wallpaper"
+category: wallpaper
+summary:
+  en: "Animated and interactive wallpapers."
+  pt-BR: "Papéis de parede animados e interativos."
+difficulty: beginner
+homepage: https://github.com/rocksdanister/lively
+license: "GPL-3.0"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: rocksdanister.LivelyWallpaper
+uninstall:
+  method: winget
+detect:
+  process: Lively.exe
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%LOCALAPPDATA%\Programs\Lively Wallpaper\Lively.exe'
+    - '%ProgramFiles%\Lively Wallpaper\Lively.exe'
+activate:
+  start: "Lively.exe"
+  autostart: true
+deactivate:
+  remove_autostart: true
+conflicts: []
+pairs_well_with: []
+changes_on_screen:
+  - en: "Your wallpaper becomes a video, animation or web page."
+    pt-BR: "Seu papel de parede vira um vídeo, uma animação ou uma página web."
+shortcuts: []
+risks:
+  en: "Animated wallpapers use CPU/GPU and battery; Lively can pause them when apps are in front."
+  pt-BR: "Papéis de parede animados usam CPU/GPU e bateria; o Lively pode pausá-los quando há apps na frente."
+how_to_undo:
+  en: "Turn off the toggle; your normal wallpaper returns."
+  pt-BR: "Desative no toggle; seu papel de parede normal volta."

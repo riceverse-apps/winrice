@@ -1,0 +1,29 @@
+id: tokyo-night-tiling
+name: "Tokyo Night Tiling"
+author:
+  name: "WinRice"
+  github: riceverse-apps
+version: 1.0.0
+license: MIT
+description:
+  en: "Komorebi tiling with a YASB bar in Tokyo Night colors. Komorebi's license restricts commercial use."
+  pt-BR: "Mosaico com Komorebi e barra YASB nas cores Tokyo Night. A licença do Komorebi restringe uso comercial."
+tags: [tiling, dark, tokyo-night, dev]
+difficulty: advanced
+requires:
+  windows_min_build: 22621
+palette:
+  name: tokyo-night
+  colors:
+    base: "#1a1b26"
+    text: "#c0caf5"
+    accent: "#7aa2f7"
+    red: "#f7768e"
+components:
+  - tool: komorebi
+    required: true
+  - tool: yasb
+    required: true
+  - tool: nerd-font
+    font: JetBrainsMono
+    required: true

@@ -1,0 +1,14 @@
+{
+  "name": "winrice-repo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-catalog.mjs",
+    "build:app": "npm --prefix app run build"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.1",
+    "yaml": "^2.5.0"
+  }
+}

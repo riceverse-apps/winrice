@@ -1,0 +1,42 @@
+id: windows-terminal
+name: Windows Terminal
+category: terminal
+summary:
+  en: "Modern terminal with tabs, themes and fonts."
+  pt-BR: "Terminal moderno com abas, temas e fontes."
+difficulty: beginner
+homepage: https://github.com/microsoft/terminal
+license: MIT
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: Microsoft.WindowsTerminal
+uninstall:
+  method: winget
+detect:
+  paths: ['%LOCALAPPDATA%\Microsoft\WindowsApps\wt.exe']
+config:
+  paths: ['%LOCALAPPDATA%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json']
+  format: json
+  backup: true
+conflicts: []
+pairs_well_with: [oh-my-posh]
+changes_on_screen:
+  - en: "Command-line windows get tabs, transparency and color schemes."
+    pt-BR: "As janelas de linha de comando ganham abas, transparência e esquemas de cores."
+shortcuts:
+  - keys: "Ctrl + Shift + T"
+    en: "New tab"
+    pt-BR: "Nova aba"
+  - keys: "Ctrl + Shift + P"
+    en: "Command palette"
+    pt-BR: "Paleta de comandos"
+risks:
+  en: "Low risk. Already included in Windows 11, so it has no on/off toggle."
+  pt-BR: "Risco baixo. Já vem no Windows 11, por isso não tem toggle de ligar/desligar."
+how_to_undo:
+  en: "Restore the backed-up settings.json from the History page."
+  pt-BR: "Restaure o settings.json do backup pela página Histórico."

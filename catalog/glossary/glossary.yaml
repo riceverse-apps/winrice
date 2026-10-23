@@ -1,0 +1,71 @@
+# Plain-language explanations of jargon. The app shows them as tooltips and lists them in Settings.
+- id: tiling
+  term: { en: "tiling", pt-BR: "mosaico (tiling)" }
+  definition:
+    en: "Windows are placed side by side automatically, filling the screen without overlapping, instead of you dragging each one."
+    pt-BR: "As janelas são organizadas lado a lado automaticamente, ocupando a tela sem ficar uma em cima da outra, em vez de você arrastar cada uma."
+- id: window-manager
+  term: { en: "window manager", pt-BR: "gerenciador de janelas" }
+  definition:
+    en: "A program that decides where windows go and how they behave."
+    pt-BR: "Um programa que decide onde as janelas ficam e como elas se comportam."
+- id: status-bar
+  term: { en: "status bar", pt-BR: "barra de status" }
+  definition:
+    en: "A strip at the edge of the screen showing things like the clock, workspaces and system information."
+    pt-BR: "Uma faixa na borda da tela que mostra coisas como relógio, áreas de trabalho e informações do sistema."
+- id: rice
+  term: { en: "rice", pt-BR: "rice" }
+  definition:
+    en: "Community slang for customizing how your desktop looks. \"Ricing\" is the act of doing it."
+    pt-BR: "Gíria da comunidade para personalizar o visual da área de trabalho. \"Ricing\" é o ato de fazer isso."
+- id: shell
+  term: { en: "shell", pt-BR: "shell" }
+  definition:
+    en: "The part of Windows you interact with every day: taskbar, Start menu and File Explorer."
+    pt-BR: "A parte do Windows com que você interage todo dia: barra de tarefas, menu Iniciar e Explorador de Arquivos."
+- id: nerd-font
+  term: { en: "Nerd Font", pt-BR: "Nerd Font" }
+  definition:
+    en: "A normal font plus thousands of extra icons. Prompts and status bars need one to show their icons."
+    pt-BR: "Uma fonte comum com milhares de ícones extras. Prompts e barras de status precisam de uma para mostrar os ícones."
+- id: dotfiles
+  term: { en: "dotfiles", pt-BR: "dotfiles" }
+  definition:
+    en: "Your configuration files, usually kept together so a setup can be copied to another computer."
+    pt-BR: "Seus arquivos de configuração, geralmente guardados juntos para copiar um setup para outro computador."
+- id: prompt
+  term: { en: "prompt", pt-BR: "prompt" }
+  definition:
+    en: "The text shown before your cursor in the terminal, such as the current folder."
+    pt-BR: "O texto mostrado antes do cursor no terminal, como a pasta atual."
+- id: terminal
+  term: { en: "terminal", pt-BR: "terminal" }
+  definition:
+    en: "A window where you type commands instead of clicking."
+    pt-BR: "Uma janela onde você digita comandos em vez de clicar."
+- id: winget
+  term: { en: "winget", pt-BR: "winget" }
+  definition:
+    en: "The official Windows tool for installing programs from the command line. WinRice uses it to install tools."
+    pt-BR: "A ferramenta oficial do Windows para instalar programas pela linha de comando. O WinRice a usa para instalar ferramentas."
+- id: mod
+  term: { en: "mod", pt-BR: "mod" }
+  definition:
+    en: "A small add-on that changes how part of Windows looks or behaves."
+    pt-BR: "Um pequeno complemento que muda o visual ou o comportamento de uma parte do Windows."
+- id: launcher
+  term: { en: "launcher", pt-BR: "lançador" }
+  definition:
+    en: "A search box that opens programs and files when you type a few letters."
+    pt-BR: "Uma caixa de busca que abre programas e arquivos quando você digita algumas letras."
+- id: explorer
+  term: { en: "Explorer", pt-BR: "Explorer" }
+  definition:
+    en: "The Windows program that draws the desktop, taskbar and File Explorer. Some tools restart it."
+    pt-BR: "O programa do Windows que desenha a área de trabalho, a barra de tarefas e o Explorador de Arquivos. Algumas ferramentas o reiniciam."
+- id: palette
+  term: { en: "palette", pt-BR: "paleta" }
+  definition:
+    en: "The set of colors of a theme. Syncing a palette recolors compatible tools at once."
+    pt-BR: "O conjunto de cores de um tema. Sincronizar a paleta muda a cor das ferramentas compatíveis de uma vez."

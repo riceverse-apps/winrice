@@ -1,0 +1,29 @@
+id: minimal-clean
+name: "Minimal Clean"
+author:
+  name: "WinRice"
+  github: riceverse-apps
+version: 1.0.0
+license: MIT
+description:
+  en: "Great for beginners: a cleaner taskbar and a fast launcher, with no change to how your windows behave."
+  pt-BR: "Ótimo para iniciantes: barra de tarefas mais limpa e um lançador rápido, sem mudar como as janelas se comportam."
+tags: [beginner, light, minimal, taskbar]
+difficulty: beginner
+requires:
+  windows_min_build: 22621
+palette:
+  name: neutral
+  colors:
+    base: "#f3f3f6"
+    text: "#1b1b24"
+    accent: "#7c6ff0"
+components:
+  - tool: windhawk
+    # Windhawk mod management is not supported yet: mods are listed here and skipped.
+    mods:
+      - id: windows-11-taskbar-styler
+      - id: windows-11-start-menu-styler
+    required: false
+  - tool: flow-launcher
+    required: true

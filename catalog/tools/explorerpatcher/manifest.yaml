@@ -1,0 +1,35 @@
+id: explorerpatcher
+name: "ExplorerPatcher"
+category: taskbar-start
+summary:
+  en: "Brings back the Windows 10 taskbar and Start menu, with many tweaks."
+  pt-BR: "Traz de volta a barra de tarefas e o menu Iniciar do Windows 10, com muitos ajustes."
+difficulty: advanced
+homepage: https://github.com/valinet/ExplorerPatcher
+license: "GPL-2.0"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: valinet.ExplorerPatcher
+uninstall:
+  method: winget
+detect:
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles%\ExplorerPatcher\ep_gui.dll'
+    - '%APPDATA%\ExplorerPatcher\ep_taskbar.dll'
+conflicts: [startallback]
+pairs_well_with: []
+changes_on_screen:
+  - en: "The taskbar and Start menu look like Windows 10 (or Windows 11 variants you choose)."
+    pt-BR: "A barra de tarefas e o menu Iniciar ficam como no Windows 10 (ou variações que você escolher)."
+shortcuts: []
+risks:
+  en: "It patches how Explorer loads. Windows updates often break it, and it can leave Explorer crashing. Has no on/off toggle here."
+  pt-BR: "Altera como o Explorer carrega. Atualizações do Windows costumam quebrá-lo e ele pode deixar o Explorer travando. Não tem toggle aqui."
+how_to_undo:
+  en: "Uninstall it from the tool page; WinRice's watchdog also reverts a crash loop right after enabling."
+  pt-BR: "Desinstale pela página da ferramenta; o watchdog do WinRice também desfaz um loop de travamentos logo após a instalação."

@@ -1,0 +1,45 @@
+id: flow-launcher
+name: Flow Launcher
+category: launcher
+summary:
+  en: "Fast launcher to open apps, files and web searches from the keyboard."
+  pt-BR: "Lançador rápido para abrir apps, arquivos e buscas pelo teclado."
+difficulty: beginner
+homepage: https://github.com/Flow-Launcher/Flow.Launcher
+license: MIT
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: Flow-Launcher.Flow-Launcher
+uninstall:
+  method: winget
+detect:
+  process: Flow.Launcher.exe
+  paths: ['%LOCALAPPDATA%\FlowLauncher\Flow.Launcher.exe']
+activate:
+  start: "Flow.Launcher.exe"
+  autostart: true
+deactivate:
+  remove_autostart: true
+config:
+  paths: ['%APPDATA%\FlowLauncher\Settings\Settings.json']
+  format: json
+  backup: true
+conflicts: []
+pairs_well_with: [glazewm]
+changes_on_screen:
+  - en: "A search box pops up in the middle of the screen when you press the hotkey."
+    pt-BR: "Uma caixa de busca aparece no meio da tela ao usar o atalho."
+shortcuts:
+  - keys: "Alt + Space"
+    en: "Open the search box"
+    pt-BR: "Abre a caixa de busca"
+risks:
+  en: "Alt + Space may clash with another launcher such as PowerToys Run."
+  pt-BR: "Alt + Espaço pode conflitar com outro lançador, como o PowerToys Run."
+how_to_undo:
+  en: "Turn off the toggle."
+  pt-BR: "Desative no toggle."

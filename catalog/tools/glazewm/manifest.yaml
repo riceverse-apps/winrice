@@ -1,0 +1,85 @@
+id: glazewm
+name: GlazeWM
+category: window-manager
+summary:
+  en: "Tiling window manager inspired by i3, driven by the keyboard."
+  pt-BR: "Organiza as janelas automaticamente lado a lado, controlado pelo teclado."
+difficulty: intermediate
+homepage: https://github.com/glzr-io/glazewm
+license: GPL-3.0
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: glzr-io.glazewm
+uninstall:
+  method: winget
+detect:
+  process: glazewm.exe
+  # UNVERIFIED: exact install folder must be confirmed in a clean VM (both layouts listed).
+  paths:
+    - '%ProgramFiles%\glzr.io\GlazeWM\glazewm.exe'
+    - '%ProgramFiles%\glzr.io\GlazeWM\cli\glazewm.exe'
+activate:
+  start: "glazewm.exe start"
+  autostart: true
+deactivate:
+  stop: "glazewm.exe command wm-exit"
+  remove_autostart: true
+config:
+  paths: ['%USERPROFILE%\.glzr\glazewm\config.yaml']
+  format: yaml
+  backup: true
+conflicts: [komorebi]
+pairs_well_with: [zebar, flow-launcher]
+changes_on_screen:
+  - en: "Windows are arranged automatically without overlapping."
+    pt-BR: "As janelas são organizadas automaticamente, sem ficar uma em cima da outra."
+  - en: "Thin colored borders appear around the focused window."
+    pt-BR: "Aparecem bordas coloridas finas ao redor da janela em foco."
+shortcuts:
+  - keys: "Alt + H/J/K/L"
+    en: "Move focus between windows"
+    pt-BR: "Muda o foco entre as janelas"
+  - keys: "Alt + Shift + H/J/K/L"
+    en: "Move the focused window"
+    pt-BR: "Move a janela em foco"
+  - keys: "Alt + Shift + E"
+    en: "Exit GlazeWM and restore normal windows"
+    pt-BR: "Fecha o GlazeWM e volta ao normal"
+risks:
+  en: "Some apps (games, fullscreen) may need a rule to float."
+  pt-BR: "Alguns apps (jogos, tela cheia) podem precisar de uma regra para não serem organizados."
+how_to_undo:
+  en: "Turn off the toggle or press Alt + Shift + E."
+  pt-BR: "Desative no toggle ou pressione Alt + Shift + E."
+widget:
+  show_by_default: true
+  quick_actions:
+    # UNVERIFIED: confirm the command name against the GlazeWM docs in a VM.
+    - id: reload-config
+      label:
+        en: "Reload config"
+        pt-BR: "Recarregar configuração"
+      command: "glazewm.exe command wm-reload-config"
+settings:
+  # UNVERIFIED: GlazeWM v3 stores gaps as strings like "10px"; confirm key names in a VM.
+  - key: gaps.inner_gap
+    type: number
+    suffix: px
+    min: 0
+    max: 200
+    default: 20
+    label:
+      en: "Gap between windows"
+      pt-BR: "Espaço entre janelas"
+  # UNVERIFIED: key path and color format must be confirmed against the GlazeWM docs in a VM.
+  - key: window_effects.focused_window.border.color
+    type: color
+    palette: accent
+    default: "#8dbcff"
+    label:
+      en: "Focused window border color"
+      pt-BR: "Cor da borda da janela em foco"

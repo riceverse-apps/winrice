@@ -1,0 +1,35 @@
+id: startallback
+name: "StartAllBack"
+category: taskbar-start
+summary:
+  en: "Paid tool that restyles the taskbar, Start menu and Explorer (free trial)."
+  pt-BR: "Ferramenta paga que muda o visual da barra de tarefas, do menu Iniciar e do Explorer (teste grátis)."
+difficulty: beginner
+homepage: https://www.startallback.com/
+license: "Proprietary"
+paid: true
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: StartIsBack.StartAllBack
+uninstall:
+  method: winget
+detect:
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles%\StartAllBack\StartAllBackCfg.exe'
+conflicts: [explorerpatcher, start11]
+pairs_well_with: []
+changes_on_screen:
+  - en: "Taskbar, Start menu and Explorer get a classic Windows 7/10 look."
+    pt-BR: "Barra de tarefas, menu Iniciar e Explorer ganham o visual clássico do Windows 7/10."
+shortcuts: []
+risks:
+  en: "Paid after the trial. Windows updates may require a new version. No on/off toggle here."
+  pt-BR: "Pago depois do período de teste. Atualizações do Windows podem exigir nova versão. Sem toggle aqui."
+how_to_undo:
+  en: "Uninstall it from the tool page."
+  pt-BR: "Desinstale pela página da ferramenta."

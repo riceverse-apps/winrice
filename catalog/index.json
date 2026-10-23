@@ -1,0 +1,412 @@
+{
+  "version": 1,
+  "tools": [
+    {
+      "id": "explorerpatcher",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "64c4c3cfbb2c90f98a992c16832ee722d8125de612f73a478c067e3f80c27666"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "44fa8c5c16d3382993ef48dd11f2138c7dd7e92d95099f599d12afeee3c653c6"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "e901410dd998275ed32d2722e76587f6f7ef6e20622ff212c99755d52c7d7087"
+        }
+      ]
+    },
+    {
+      "id": "fastfetch",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "81ff405c797727fb47c3ed6c1838454005770b84647ad1dc1af0e0da83a7d167"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "1da5747f8c2c91e74feddc9c4122dcb1639c4a0167d919c5e06e1a67ba0ff815"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "4fe486c6c74035948239254d57634b63478970aad8b6ee5b3f5461a300f001c4"
+        }
+      ]
+    },
+    {
+      "id": "flow-launcher",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "5306e12ac9422ade62f40adb87e6c509fd61964e754b29c15b9d730bc5f5ee27"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "3f5acc422233fb208522079ba032b15eb34b20370c5b9aa514ac6c61eac84c7f"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "a57dcef3ce16ab8336f53f18a0b16cbf9d803fa5ef5eb5a0f4becb8d7a2696bd"
+        }
+      ]
+    },
+    {
+      "id": "glazewm",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "87dd2d3795be27d511e14c06b7af695400a662598508cef5f9de3e94539150db"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "6fed1fcad4843c2629bd8a05c1b568d4a0e77e7a0017e4cebbc31910c39539c9"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "11fe475316521653361fd4715a522c710e0eda09e76430b8450d0901825983a9"
+        }
+      ]
+    },
+    {
+      "id": "komorebi",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "7e571b2c78b6a3f79700c764409e105a9253f571060b021fd8744f507add9266"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "a8975a8984ab850ded5bf17f3a3bb53b886a9a9b93183d5422a35efe79dcbf0c"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "ca9773e65a79b50f71eafbb24e740e150d33eb92ec4510d047b1a29119e6271e"
+        }
+      ]
+    },
+    {
+      "id": "lively",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "8a1ba4aa5fc1b653f098d24f6429802e6ec0f3889dd097e94e17b95481a40f01"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "8141b9f9666b25fd29fcb15876e3e0a70e68388c6fc4d0910428f560f2df4eba"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "e8e184bd8a373d2f291c0620766be7dba51379cb9e8c6651d9007b2e9b1c77da"
+        }
+      ]
+    },
+    {
+      "id": "nerd-font",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "afe88e15608720db100973cab48780f767fe7ce315064eb21f166a0e0029f121"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "f6bb206174e1f7a76278030ed581e5fc8de126dc64f7820e653919313666aee9"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "5acce12d4ee7030b737413175fdf2610f29e35196ab806fbff92121fe08be99c"
+        }
+      ]
+    },
+    {
+      "id": "nilesoft-shell",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "e457fc0a7ea7402ee867d58b0ab749c2e80384f341eb034439e519237ff0bc54"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "ae1fcef831e26055a35bfb7c6cdbb3e24b1c499c25c24d67a6732abea044937e"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "abed81af2a7e3ba2322dbeca8a632ce9548049a04d2f0e6f7fad96954bed58b6"
+        }
+      ]
+    },
+    {
+      "id": "oh-my-posh",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "24b193c846afe66f0b544bd406c513f7befc2cfaf8ad612955e79024d1025a97"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "840c277662dd7a89497650c9ee1bb09d58afeeaeeadb1e2024c1c257fdbff080"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "e5e07403f0bdd694b0c8f63d30631b522d0dd50e96631617a9c28dc691905d16"
+        }
+      ]
+    },
+    {
+      "id": "powertoys",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "26556e1b2ed3b3f0df6d2e334c09cc00afa73be763ace71b707d76166a0e7fb9"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "0d5929f32540372102efb20e25e70bf8f586d69f7c05e102fb5a00d693d23668"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "d39f4ed258aaac18e6674a86b88bb011610e2850f3eefea4053037aa0f51e073"
+        }
+      ]
+    },
+    {
+      "id": "rainmeter",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "a3aa0ebdf156552d8c224ecd0f93fba9886d1cd78628d318b267537cce7601f0"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "da4af6edc0ee3010b6bfdc2d32f42a2268608ee4efb348fe7c63f912481158a1"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "22348021275e7a8b52e12e797a4b5de5461b96f1972e686c9d4e8aef5f4965c7"
+        }
+      ]
+    },
+    {
+      "id": "seelen-ui",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "3925296f68ac732ba654ed5ab5c64c77a7d558237ddec6baa2959df251bdf1cb"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "2b755107394cb57b1ddf5d244d7e6e8c1f413308d23bc0ce577721b5aef4e389"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "8a238a33afb65d19a44ab7e81ba5c0424cf01f3664dd4fda3f47267dc7059b88"
+        }
+      ]
+    },
+    {
+      "id": "starship",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "51bb9bb4970347d1c65c25e60cdd4efe903ab7c851179b48267124142e356a7b"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "6e7afaae045010267badbc2edac67526785eac2794f2648c262db81d8ebf1e28"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "9c0d0cb71126dec1d87b2a07fc572353d2ad8ac13969258c42dedf47c40ac515"
+        }
+      ]
+    },
+    {
+      "id": "start11",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "ae5dd455e100a31fdfc9faf8b5201ac8fd9322ac441ee49c199374b8c3ba972e"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "3edafea4cd4f03606680efd28ae6b89344695d030d09643521a0280bb99b1a3e"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "8388284e2e38298cdea7cf49af959c7dc1410187dbacf91e9da12a44d68d322b"
+        }
+      ]
+    },
+    {
+      "id": "startallback",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "fb417b6eb881343ad468f5dddaa8c4b70a5e720eb087cbddb0d7cff5b5750eec"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "254895fb8fc188b1740ab9eb54ee445cc3bec52d7c08c78c48e05bfa77f8578a"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "b73b54968a3b0dbd855a87a526c9511b2e6f8a8eb67557613580bf5274418f23"
+        }
+      ]
+    },
+    {
+      "id": "translucenttb",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "7ae16df5a1337d7d96ac42fd5ffd7374515d87a764712a005c1990831c10b4bf"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "deeffa65ae8ac453092fdf1caaa350c9518d9d1bfb1bba58d6cd7e83ae296e1d"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "961a69886196a25f6bdf0fd6348d3082bf7f74fd62461898c1736c70224db3a1"
+        }
+      ]
+    },
+    {
+      "id": "windhawk",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "0079b53c5b69cf67dc882e4706dadedb44a66c8dde34c9e5a6f29382faa6b0b3"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "c1793ad50a3807add6a0e68b18efd37bb0920b8c4518ff6a6728bd413a7b3706"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "53f7a52cfec63814b65eb5f72e445cb8f031251aceb3b0bbe2cc0b2229384244"
+        }
+      ]
+    },
+    {
+      "id": "windows-terminal",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "95c0b964e37a688674788d61840240a6426e5459d0ed2a65ad153d751d341537"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "c953ac8a5b8d03ce0a60e1f380016b71f0a5b1da4ffca023875c40a41524c2aa"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "40a4990712ac70ec1f9c542111f1db22e578f5a338eba9b8b306c79b1bffc38b"
+        }
+      ]
+    },
+    {
+      "id": "yasb",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "a78595cedce01bbd7525fff9f51f6382b6a6ad0b1d3130aa649355d5d36b4e12"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "8bc7e80af19402b38c75a811885ab4a0cf4dc5a079806ae10012859fd12ea832"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "693de471ede6f58c7a919ad9f89763709ff140f5b653c996550c29f1ae6ff10a"
+        }
+      ]
+    },
+    {
+      "id": "zebar",
+      "files": [
+        {
+          "path": "docs/en.md",
+          "sha256": "5b1e6dfd72bc17cb8d4fb4acc9bf8cf1428e994d0ec61e065a5e254d6239d878"
+        },
+        {
+          "path": "docs/pt-BR.md",
+          "sha256": "20ee53c8d1b8d191d38a6ca1fb48a575beefef73542afa1acdb3660ddc009468"
+        },
+        {
+          "path": "manifest.yaml",
+          "sha256": "ec8ab13419b29d7721bd4197d33190a5e938758295c487ec741b18cef4ab8cc2"
+        }
+      ]
+    }
+  ],
+  "themes": [
+    {
+      "id": "catppuccin-dev",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "ab071c39d48971ed2591b6c2f445ac5074550bf4357bce926f4ab3e28ff9d105"
+        },
+        {
+          "path": "theme.yaml",
+          "sha256": "c783329556dafb1a56530624d707940e63fd7588df1710a0655a49bf8a7d5c38"
+        }
+      ]
+    },
+    {
+      "id": "macos-like",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "7c51196b2ae273a2e549564fa370d115074e21af6f811dbdea806d1c929957a1"
+        },
+        {
+          "path": "theme.yaml",
+          "sha256": "9e2443228860861146edaae69dc88fd2f328f79c529c59fe7da6ccf927c05b56"
+        }
+      ]
+    },
+    {
+      "id": "minimal-clean",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "cf67fdb73474d0f2697814e8002f1a4f873050e3b0ca7347315ac2c79505d9fd"
+        },
+        {
+          "path": "theme.yaml",
+          "sha256": "34ca84945941de58cdf29794283b60c828c04beaef4240027c0f564f9107d54a"
+        }
+      ]
+    },
+    {
+      "id": "retro-classic",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "768905990b08461ee05cdc37120259427462457caaf4130ddb49acc4bbcb5c34"
+        },
+        {
+          "path": "theme.yaml",
+          "sha256": "e46ccdf7576dea78384c75a44a377feb5ddc6a8ce80c89e26114bc5a0d0dae7a"
+        }
+      ]
+    },
+    {
+      "id": "tokyo-night-tiling",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "c9fcf8ea35d46cc243410df36e0a3447c637f2eab56c33fe62d373df8174abca"
+        },
+        {
+          "path": "theme.yaml",
+          "sha256": "557f7139497563fc50e9c846ddb3546f38a170dc59ed51a2d81ccbbd8a6ef10f"
+        }
+      ]
+    }
+  ]
+}

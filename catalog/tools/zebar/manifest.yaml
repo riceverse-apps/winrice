@@ -1,0 +1,45 @@
+id: zebar
+name: Zebar
+category: status-bar
+summary:
+  en: "Customizable status bar and desktop widgets built with web technologies."
+  pt-BR: "Barra de status e widgets de desktop personalizáveis."
+difficulty: intermediate
+homepage: https://github.com/glzr-io/zebar
+license: GPL-3.0
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: glzr-io.zebar
+uninstall:
+  method: winget
+detect:
+  process: zebar.exe
+  # UNVERIFIED: exact install folder must be confirmed in a clean VM.
+  paths:
+    - '%ProgramFiles%\glzr.io\Zebar\zebar.exe'
+    - '%LOCALAPPDATA%\Programs\Zebar\zebar.exe'
+activate:
+  start: "zebar.exe"
+  autostart: true
+deactivate:
+  remove_autostart: true
+config:
+  paths: ['%USERPROFILE%\.glzr\zebar\settings.json']
+  format: json
+  backup: true
+conflicts: []
+pairs_well_with: [glazewm]
+changes_on_screen:
+  - en: "A bar appears at the edge of the screen with clock, workspaces and system info."
+    pt-BR: "Aparece uma barra na borda da tela com relógio, áreas de trabalho e informações do sistema."
+shortcuts: []
+risks:
+  en: "The bar can overlap the Windows taskbar; hide the taskbar or use it with GlazeWM."
+  pt-BR: "A barra pode ficar sobre a barra de tarefas do Windows; esconda a barra de tarefas ou use junto com o GlazeWM."
+how_to_undo:
+  en: "Turn off the toggle; the bar closes."
+  pt-BR: "Desative no toggle; a barra fecha."

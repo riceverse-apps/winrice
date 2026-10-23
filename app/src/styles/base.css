@@ -1,0 +1,51 @@
+* { box-sizing: border-box; }
+html, body, #app { height: 100%; margin: 0; }
+body {
+  font-family: var(--font);
+  font-size: calc(14px * var(--font-scale));
+  background: var(--bg);
+  color: var(--text);
+}
+h1 { font-size: 1.6em; margin: 0 0 var(--space); font-weight: 600; }
+h2 { font-size: 1.1em; margin: 0 0 8px; font-weight: 600; }
+p { line-height: 1.5; margin: 0 0 var(--space); }
+.muted { color: var(--text-muted); }
+
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+.shell { display: grid; grid-template-columns: 240px 1fr; height: 100%; }
+.sidebar {
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border);
+  padding: var(--space);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.15em; padding: 4px 8px 16px; }
+.brand img { width: 28px; height: 28px; }
+.brand b { color: var(--accent); }
+.nav-link {
+  display: block; padding: 9px 12px; border-radius: var(--radius);
+  color: var(--text); text-decoration: none;
+}
+.nav-link:hover { background: var(--surface); }
+.nav-link.router-link-exact-active { background: var(--accent); color: var(--accent-text); }
+.spacer { flex: 1; }
+.content { padding: calc(var(--space) * 2); overflow: auto; }
+.card {
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: var(--space); margin-bottom: var(--space);
+}
+.row { display: flex; align-items: center; justify-content: space-between; gap: var(--space); padding: 8px 0; }
+.btn {
+  font: inherit; color: var(--accent-text); background: var(--accent);
+  border: 0; border-radius: var(--radius); padding: 8px 14px; cursor: pointer;
+}
+.btn.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+select, input[type="color"] {
+  font: inherit; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 8px;
+}
+/* Widget windows draw their own rounded panel on a see-through window. */
+html.widget-window, html.widget-window body { background: transparent; }
+abbr.term { text-decoration: underline dotted var(--text-muted); cursor: help; }
+.empty { text-align: center; padding: 48px 0; }

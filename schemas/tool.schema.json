@@ -1,0 +1,343 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://riceverse.dev/schemas/tool.schema.json",
+  "title": "WinRice tool manifest",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "category",
+    "summary",
+    "difficulty",
+    "homepage",
+    "license",
+    "requires",
+    "install",
+    "detect"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "i18n": {
+      "type": "object",
+      "required": [
+        "en",
+        "pt-BR"
+      ],
+      "properties": {
+        "en": {
+          "type": "string"
+        },
+        "pt-BR": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "method": {
+      "enum": [
+        "winget",
+        "github-release",
+        "url"
+      ]
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "window-manager",
+        "status-bar",
+        "taskbar-start",
+        "shell-mod",
+        "terminal",
+        "launcher",
+        "wallpaper",
+        "widgets",
+        "icons-cursors",
+        "file-manager"
+      ]
+    },
+    "summary": {
+      "$ref": "#/definitions/i18n"
+    },
+    "difficulty": {
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ]
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri"
+    },
+    "license": {
+      "type": "string"
+    },
+    "requires": {
+      "type": "object",
+      "required": [
+        "windows_min_build"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "windows_min_build": {
+          "type": "integer"
+        },
+        "windows_max_build": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "admin": {
+          "type": "boolean"
+        }
+      }
+    },
+    "install": {
+      "type": "object",
+      "required": [
+        "method"
+      ],
+      "properties": {
+        "method": {
+          "$ref": "#/definitions/method"
+        },
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "uninstall": {
+      "type": "object",
+      "required": [
+        "method"
+      ],
+      "properties": {
+        "method": {
+          "$ref": "#/definitions/method"
+        }
+      }
+    },
+    "detect": {
+      "type": "object",
+      "properties": {
+        "process": {
+          "type": "string"
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "activate": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "autostart": {
+          "type": "boolean"
+        },
+        "profile_snippet": {
+          "type": "object",
+          "required": [
+            "files",
+            "content"
+          ],
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "content": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "deactivate": {
+      "type": "object",
+      "properties": {
+        "stop": {
+          "type": "string"
+        },
+        "remove_autostart": {
+          "type": "boolean"
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "format": {
+          "type": "string"
+        },
+        "backup": {
+          "type": "boolean"
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pairs_well_with": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "changes_on_screen": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/i18n"
+      }
+    },
+    "shortcuts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "keys",
+          "en",
+          "pt-BR"
+        ],
+        "properties": {
+          "keys": {
+            "type": "string"
+          },
+          "en": {
+            "type": "string"
+          },
+          "pt-BR": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "risks": {
+      "$ref": "#/definitions/i18n"
+    },
+    "how_to_undo": {
+      "$ref": "#/definitions/i18n"
+    },
+    "media": {
+      "type": "object",
+      "properties": {
+        "screenshots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "demo": {
+          "type": "string"
+        }
+      }
+    },
+    "settings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "type",
+          "label"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "number",
+              "boolean",
+              "string",
+              "color",
+              "choice"
+            ]
+          },
+          "label": {
+            "$ref": "#/definitions/i18n"
+          },
+          "default": {},
+          "suffix": {
+            "type": "string"
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "palette": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "paid": {
+      "type": "boolean"
+    },
+    "restricted_license": {
+      "type": "boolean"
+    },
+    "widget": {
+      "type": "object",
+      "properties": {
+        "show_by_default": {
+          "type": "boolean"
+        },
+        "quick_actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label",
+              "command"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "$ref": "#/definitions/i18n"
+              },
+              "command": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

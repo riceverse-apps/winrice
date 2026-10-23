@@ -1,0 +1,48 @@
+id: fastfetch
+name: "Fastfetch"
+category: terminal
+summary:
+  en: "Shows your system info with a logo when the terminal opens."
+  pt-BR: "Mostra as informações do seu sistema com um logo ao abrir o terminal."
+difficulty: beginner
+homepage: https://github.com/fastfetch-cli/fastfetch
+license: "MIT"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: Fastfetch-cli.Fastfetch
+uninstall:
+  method: winget
+detect:
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%LOCALAPPDATA%\Microsoft\WinGet\Links\fastfetch.exe'
+activate:
+  profile_snippet:
+    files:
+      - '%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+      - '%USERPROFILE%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'
+    content: 'fastfetch'
+deactivate:
+  remove_autostart: false
+config:
+  paths:
+    - '%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+    - '%USERPROFILE%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'
+  format: powershell
+  backup: true
+conflicts: []
+pairs_well_with: [windows-terminal]
+changes_on_screen:
+  - en: "A summary of your system (OS, CPU, memory) is printed each time PowerShell starts."
+    pt-BR: "Um resumo do seu sistema (SO, CPU, memória) aparece sempre que o PowerShell inicia."
+shortcuts: []
+risks:
+  en: "Edits your PowerShell profile (backed up first) and adds a small delay when opening a terminal."
+  pt-BR: "Edita seu perfil do PowerShell (com backup antes) e adiciona um pequeno atraso ao abrir o terminal."
+how_to_undo:
+  en: "Turn off the toggle; the added line is removed."
+  pt-BR: "Desative no toggle; a linha adicionada é removida."

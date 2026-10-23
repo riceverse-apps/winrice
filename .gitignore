@@ -1,0 +1,7 @@
+node_modules/
+dist/
+target/
+app/src-tauri/gen/
+packaging/winget/out/
+sandbox/stage/
+sandbox/winrice.wsb

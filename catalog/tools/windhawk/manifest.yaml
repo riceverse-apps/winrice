@@ -1,0 +1,41 @@
+id: windhawk
+name: Windhawk
+category: taskbar-start
+summary:
+  en: "Mod platform that restyles the taskbar, Start menu and more."
+  pt-BR: "Plataforma de mods que muda o visual da barra de tarefas, do menu Iniciar e mais."
+difficulty: beginner
+homepage: https://windhawk.net/
+license: Freeware
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: true
+install:
+  method: winget
+  id: RamenSoftware.Windhawk
+uninstall:
+  method: winget
+detect:
+  process: windhawk.exe
+  paths: ['%ProgramFiles%\Windhawk\windhawk.exe']
+activate:
+  start: "windhawk.exe -tray-only"
+  autostart: false
+deactivate:
+  remove_autostart: false
+config:
+  paths: []
+  backup: false
+conflicts: []
+pairs_well_with: [glazewm, zebar]
+changes_on_screen:
+  - en: "Nothing changes until you enable mods; Windows 11 Taskbar Styler is the most popular."
+    pt-BR: "Nada muda até você ativar mods; o Windows 11 Taskbar Styler é o mais popular."
+shortcuts: []
+risks:
+  en: "Mods inject code into Explorer; a bad mod can crash it. Windows updates may break mods."
+  pt-BR: "Mods injetam código no Explorer; um mod ruim pode travá-lo. Atualizações do Windows podem quebrar mods."
+how_to_undo:
+  en: "Disable the mod in Windhawk, or turn off the toggle."
+  pt-BR: "Desative o mod no Windhawk ou desligue o toggle."

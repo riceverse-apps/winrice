@@ -1,0 +1,23 @@
+id: retro-classic
+name: "Retro Classic"
+author:
+  name: "WinRice"
+  github: riceverse-apps
+version: 1.0.0
+license: MIT
+description:
+  en: "Brings back the classic Windows 10 taskbar and Start menu. It changes how Explorer loads, so read the warnings first."
+  pt-BR: "Traz de volta a barra de tarefas e o menu Iniciar clássicos do Windows 10. Muda como o Explorer carrega, então leia os avisos antes."
+tags: [retro, classic, light, windows10]
+difficulty: advanced
+requires:
+  windows_min_build: 22621
+palette:
+  name: classic-grey
+  colors:
+    base: "#c0c0c0"
+    text: "#000000"
+    accent: "#000080"
+components:
+  - tool: explorerpatcher
+    required: true

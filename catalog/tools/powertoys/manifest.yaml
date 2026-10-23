@@ -1,0 +1,41 @@
+id: powertoys
+name: "PowerToys"
+category: launcher
+summary:
+  en: "Microsoft's toolbox: FancyZones, Run launcher and more."
+  pt-BR: "Caixa de ferramentas da Microsoft: FancyZones, lançador Run e mais."
+difficulty: beginner
+homepage: https://github.com/microsoft/PowerToys
+license: "MIT"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: Microsoft.PowerToys
+uninstall:
+  method: winget
+detect:
+  process: PowerToys.exe
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles%\PowerToys\PowerToys.exe'
+    - '%LOCALAPPDATA%\PowerToys\PowerToys.exe'
+activate:
+  start: "PowerToys.exe"
+  autostart: true
+deactivate:
+  remove_autostart: true
+conflicts: []
+pairs_well_with: [flow-launcher]
+changes_on_screen:
+  - en: "New utilities become available, such as snapping windows into custom zones."
+    pt-BR: "Novos utilitários ficam disponíveis, como encaixar janelas em zonas personalizadas."
+shortcuts: []
+risks:
+  en: "Low risk. Alt + Space may clash with Flow Launcher. Managing single modules comes in a later version."
+  pt-BR: "Risco baixo. Alt + Espaço pode conflitar com o Flow Launcher. Gerenciar módulos individuais vem numa versão futura."
+how_to_undo:
+  en: "Turn off the toggle."
+  pt-BR: "Desative no toggle."

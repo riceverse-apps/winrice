@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WinRice</title>
+  <meta name="description" content="Customize Windows 11 with one click. Every change is planned, backed up and reversible." />
+  <link rel="icon" href="logo-mark.svg" type="image/svg+xml" />
+  <style>
+    :root { --bg: #f7f7fa; --card: #fff; --text: #1b1b24; --muted: #565668; --border: #dcdce6; --accent: #5b4fd6; --accent-text: #fff; --warn: #8a5a00; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #1e1e2e; --card: #272739; --text: #ecebf5; --muted: #a9a8bd; --border: #3a3a52; --accent: #7c6ff0; --warn: #f0b84a; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.6 "Segoe UI Variable", "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    main { max-width: 880px; margin: 0 auto; padding: 24px 16px 64px; }
+    header { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.25rem; }
+    .brand img { width: 36px; height: 36px; }
+    .brand b { color: var(--accent); }
+    .lang button { font: inherit; background: none; border: 1px solid var(--border); color: var(--text); padding: 4px 10px; border-radius: 8px; cursor: pointer; }
+    .lang button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    h1 { font-size: clamp(1.8rem, 5vw, 2.8rem); line-height: 1.15; margin: 48px 0 12px; }
+    .lead { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+    .status { border: 1px solid var(--warn); border-radius: 12px; padding: 12px 16px; margin: 24px 0; }
+    .status strong { color: var(--warn); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 32px 0; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .card h2 { font-size: 1.05rem; margin: 0 0 6px; }
+    .card p { margin: 0; color: var(--muted); }
+    .links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+    .btn { display: inline-block; padding: 10px 18px; border-radius: 10px; text-decoration: none; font-weight: 600; background: var(--accent); color: var(--accent-text); }
+    .btn.secondary { background: none; color: var(--text); border: 1px solid var(--border); }
+    footer { margin-top: 48px; color: var(--muted); font-size: 0.9rem; }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+    [lang-block] { display: none; }
+    html[lang="en"] [lang-block="en"], html[lang="pt-BR"] [lang-block="pt-BR"] { display: block; }
+    html[lang="en"] span[lang-block="en"], html[lang="pt-BR"] span[lang-block="pt-BR"] { display: inline; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><img src="logo-mark.svg" alt="" /><span>Win<b>Rice</b></span></div>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">English</button>
+      <button data-lang="pt-BR" aria-pressed="false">Português</button>
+    </div>
+  </header>
+
+  <section lang-block="en">
+    <h1>Customize Windows 11 with one click.</h1>
+    <p class="lead">A catalog of community customization tools, a theme library and a quick-access widget, with a plan before every change, a backup of your files, and an undo for everything.</p>
+  </section>
+  <section lang-block="pt-BR">
+    <h1>Personalize o Windows 11 com um clique.</h1>
+    <p class="lead">Um catálogo de ferramentas de personalização da comunidade, uma biblioteca de temas e um widget de acesso rápido, com plano antes de cada mudança, backup dos seus arquivos e desfazer para tudo.</p>
+  </section>
+
+  <div class="status" role="note">
+    <div lang-block="en"><strong>In development.</strong> There is no public download yet. The code and tests are on GitHub; the install and undo flows are still being validated on clean Windows 11 machines.</div>
+    <div lang-block="pt-BR"><strong>Em desenvolvimento.</strong> Ainda não há download público. O código e os testes estão no GitHub; os fluxos de instalar e desfazer ainda estão sendo validados em máquinas Windows 11 limpas.</div>
+  </div>
+
+  <div class="grid" lang-block="en">
+    <div class="card"><h2>20 tools, one switch each</h2><p>Tiling window managers, status bars, taskbar mods, prompts, launchers. Docs in plain language.</p></div>
+    <div class="card"><h2>Try before you keep</h2><p>Apply for 30 seconds. If you do not confirm, it all goes back by itself.</p></div>
+    <div class="card"><h2>Always reversible</h2><p>Backups, a history with undo, and "Restore original Windows".</p></div>
+    <div class="card"><h2>Themes</h2><p>Complete setups in one click: apply all or part, undo, import from GitHub, share yours.</p></div>
+    <div class="card"><h2>Widget</h2><p>Quick toggles, profiles, a pause button and live hardware info from the tray.</p></div>
+    <div class="card"><h2>Private and open</h2><p>MIT license. No telemetry. Tools are installed from their official sources.</p></div>
+  </div>
+  <div class="grid" lang-block="pt-BR">
+    <div class="card"><h2>20 ferramentas, um botão cada</h2><p>Gerenciadores de janelas em mosaico, barras de status, mods da barra de tarefas, prompts, lançadores. Documentação em linguagem simples.</p></div>
+    <div class="card"><h2>Teste antes de manter</h2><p>Aplique por 30 segundos. Se não confirmar, tudo volta sozinho.</p></div>
+    <div class="card"><h2>Sempre reversível</h2><p>Backups, histórico com desfazer e "Voltar ao Windows original".</p></div>
+    <div class="card"><h2>Temas</h2><p>Setups completos com um clique: aplique tudo ou parte, desfaça, importe do GitHub, compartilhe os seus.</p></div>
+    <div class="card"><h2>Widget</h2><p>Ligar/desligar rápido, perfis, botão de pausa e informações do hardware em tempo real pela bandeja.</p></div>
+    <div class="card"><h2>Privado e aberto</h2><p>Licença MIT. Sem telemetria. As ferramentas são instaladas das fontes oficiais.</p></div>
+  </div>
+
+  <div class="links">
+    <a class="btn" href="https://github.com/riceverse-apps/winrice">GitHub</a>
+    <a class="btn secondary" href="https://github.com/riceverse-apps/winrice/blob/main/CONTRIBUTING.md"><span lang-block="en">Contribute</span><span lang-block="pt-BR">Contribuir</span></a>
+    <a class="btn secondary" href="https://github.com/riceverse-apps/winrice/releases"><span lang-block="en">Releases</span><span lang-block="pt-BR">Versões</span></a>
+  </div>
+
+  <footer>
+    <span lang-block="en">WinRice is an independent project. Windows is a trademark of Microsoft; all other names belong to their owners.</span>
+    <span lang-block="pt-BR">O WinRice é um projeto independente. Windows é marca da Microsoft; os demais nomes pertencem aos seus donos.</span>
+  </footer>
+</main>
+<script>
+  (function () {
+    var buttons = document.querySelectorAll("[data-lang]");
+    function set(lang) {
+      document.documentElement.lang = lang;
+      buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.lang === lang)); });
+      try { localStorage.setItem("winrice.site.lang", lang); } catch (e) {}
+    }
+    var saved = null;
+    try { saved = localStorage.getItem("winrice.site.lang"); } catch (e) {}
+    var guess = (navigator.language || "en").toLowerCase().indexOf("pt") === 0 ? "pt-BR" : "en";
+    set(saved === "en" || saved === "pt-BR" ? saved : guess);
+    buttons.forEach(function (b) { b.addEventListener("click", function () { set(b.dataset.lang); }); });
+  })();
+</script>
+</body>
+</html>

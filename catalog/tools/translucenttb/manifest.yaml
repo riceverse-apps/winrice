@@ -1,0 +1,40 @@
+id: translucenttb
+name: "TranslucentTB"
+category: taskbar-start
+summary:
+  en: "Makes the taskbar transparent or blurred."
+  pt-BR: "Deixa a barra de tarefas transparente ou desfocada."
+difficulty: beginner
+homepage: https://github.com/TranslucentTB/TranslucentTB
+license: "GPL-3.0"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: CharlesMilette.TranslucentTB
+uninstall:
+  method: winget
+detect:
+  process: TranslucentTB.exe
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%LOCALAPPDATA%\Microsoft\WindowsApps\TranslucentTB.exe'
+activate:
+  start: "TranslucentTB.exe"
+  autostart: false
+deactivate:
+  remove_autostart: false
+conflicts: []
+pairs_well_with: [windhawk]
+changes_on_screen:
+  - en: "The taskbar becomes transparent, blurred or colored."
+    pt-BR: "A barra de tarefas fica transparente, desfocada ou colorida."
+shortcuts: []
+risks:
+  en: "Very low risk. It only changes how the taskbar is drawn while it runs."
+  pt-BR: "Risco muito baixo. Só muda como a barra de tarefas é desenhada enquanto está rodando."
+how_to_undo:
+  en: "Turn off the toggle; the taskbar goes back to normal."
+  pt-BR: "Desative no toggle; a barra de tarefas volta ao normal."

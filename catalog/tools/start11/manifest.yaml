@@ -1,0 +1,36 @@
+id: start11
+name: "Start11"
+category: taskbar-start
+summary:
+  en: "Paid tool to customize the Start menu and taskbar (free trial)."
+  pt-BR: "Ferramenta paga para personalizar o menu Iniciar e a barra de tarefas (teste grátis)."
+difficulty: beginner
+homepage: https://www.stardock.com/products/start11/
+license: "Proprietary"
+paid: true
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: Stardock.Start11.v2
+uninstall:
+  method: winget
+detect:
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles(x86)%\Stardock\Start11\Start11Config.exe'
+    - '%ProgramFiles%\Stardock\Start11\Start11Config.exe'
+conflicts: [startallback]
+pairs_well_with: []
+changes_on_screen:
+  - en: "The Start menu and taskbar take the style you choose."
+    pt-BR: "O menu Iniciar e a barra de tarefas ficam no estilo que você escolher."
+shortcuts: []
+risks:
+  en: "Paid after the trial. No on/off toggle here."
+  pt-BR: "Pago depois do teste. Sem toggle aqui."
+how_to_undo:
+  en: "Uninstall it from the tool page."
+  pt-BR: "Desinstale pela página da ferramenta."

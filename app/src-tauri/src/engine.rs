@@ -1,0 +1,267 @@
+//! Transaction Engine: plan -> backup -> apply -> verify -> commit or rollback.
+//!
+//! A `Plan` is a list of `Step`s. Applying a step records how to undo it; if a later
+//! step fails, the recorded undos run in reverse order.
+
+use crate::backup;
+use crate::os::{winget_args, Os};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, PartialEq)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum Step {
+    WingetInstall { tool: String, id: String },
+    WingetUninstall { tool: String, id: String },
+    BackupFiles { tool: String, files: Vec<String> },
+    AddProfileBlock { tool: String, files: Vec<String>, content: String },
+    RemoveProfileBlock { tool: String, files: Vec<String> },
+    SetRunKey { tool: String, name: String, command: String },
+    DelRunKey { tool: String, name: String },
+    Start { tool: String, program: String, args: Vec<String>, process: Option<String> },
+    /// Stops a tool: runs `program args` if given, then kills `process` if still alive.
+    /// `restart` (program + args) is used to undo the stop.
+    Stop { tool: String, program: Option<String>, args: Vec<String>, process: Option<String>, restart: Option<Vec<String>> },
+    RestoreOriginals,
+    /// Sets one value (dotted key) inside a YAML or JSON config file.
+    SetConfigValue { tool: String, file: String, format: String, key: String, value: serde_json::Value },
+    /// Replaces a config file with the content shipped by a theme.
+    WriteConfig { tool: String, file: String, content: String },
+    /// Copies the theme wallpaper into WinRice's data folder and makes it the desktop wallpaper.
+    SetWallpaper { theme: String, name: String, #[serde(skip)] bytes: Vec<u8> },
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct Plan {
+    pub tool: String,
+    pub action: String,
+    pub steps: Vec<Step>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct Outcome {
+    pub ok: bool,
+    pub applied: usize,
+    pub error: Option<String>,
+    pub rolled_back: bool,
+    pub rollback_errors: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub enum Undo {
+    WriteFile { path: String, prev: Option<String> },
+    WingetUninstall(String),
+    WingetInstall(String),
+    RunKey { name: String, prev: Option<String> },
+    Kill(String),
+    Spawn(Vec<String>),
+    Wallpaper { prev: Option<String> },
+}
+
+/// Everything needed to undo a plan that already succeeded (try mode, watchdog, shortcut).
+#[derive(Default, Serialize, Deserialize)]
+pub struct Journal(Vec<Undo>);
+
+impl Journal {
+    pub fn extend(&mut self, other: Journal) {
+        self.0.extend(other.0);
+    }
+    pub fn to_json(&self) -> String {
+        serde_json::to_string(self).unwrap_or_else(|_| "[]".into())
+    }
+    pub fn from_json(s: &str) -> Option<Self> {
+        serde_json::from_str(s).ok()
+    }
+}
+
+fn marker(tool: &str, open: bool) -> String {
+    if open { format!("# >>> winrice:{tool} >>>") } else { format!("# <<< winrice:{tool} <<<") }
+}
+
+pub fn has_block(text: &str, tool: &str) -> bool {
+    text.contains(&marker(tool, true))
+}
+
+/// Text with the WinRice block for `tool` removed (unchanged when absent).
+pub fn without_block(text: &str, tool: &str) -> String {
+    let (open, close) = (marker(tool, true), marker(tool, false));
+    let Some(start) = text.find(&open) else { return text.to_string() };
+    let end = text[start..].find(&close).map(|e| start + e + close.len()).unwrap_or(text.len());
+    let tail = text[end..].trim_start_matches(['\r', '\n']);
+    let head = &text[..start];
+    format!("{head}{tail}")
+}
+
+pub fn with_block(text: &str, tool: &str, content: &str) -> String {
+    let mut base = without_block(text, tool);
+    if !base.is_empty() && !base.ends_with('\n') {
+        base.push('\n');
+    }
+    format!("{base}{}\n{content}\n{}\n", marker(tool, true), marker(tool, false))
+}
+
+fn winget(os: &dyn Os, verb: &str, id: &str) -> Result<(), String> {
+    let code = os.run("winget", &winget_args(verb, id))?;
+    if code == 0 { Ok(()) } else { Err(format!("winget {verb} {id} failed (exit code {code})")) }
+}
+
+fn wait_for(os: &dyn Os, process: &str, want_running: bool) -> bool {
+    for _ in 0..10 {
+        if os.process_running(process) == want_running {
+            return true;
+        }
+        os.sleep_ms(500);
+    }
+    os.process_running(process) == want_running
+}
+
+fn apply(os: &dyn Os, step: &Step, undos: &mut Vec<Undo>) -> Result<(), String> {
+    match step {
+        Step::WingetInstall { id, .. } => {
+            undos.push(Undo::WingetUninstall(id.clone()));
+            winget(os, "install", id)
+        }
+        Step::WingetUninstall { id, .. } => {
+            winget(os, "uninstall", id)?;
+            undos.push(Undo::WingetInstall(id.clone()));
+            Ok(())
+        }
+        Step::BackupFiles { files, .. } => files.iter().try_for_each(|f| backup::backup_file(os, &os.expand(f))),
+        Step::AddProfileBlock { tool, files, content } => {
+            for f in files {
+                let path = os.expand(f);
+                backup::backup_file(os, &path)?;
+                let prev = os.read(&path).map_err(|e| format!("{path}: {e}"))?;
+                let next = with_block(prev.as_deref().unwrap_or(""), tool, content);
+                undos.push(Undo::WriteFile { path: path.clone(), prev });
+                os.write(&path, &next).map_err(|e| format!("{path}: {e}"))?;
+            }
+            Ok(())
+        }
+        Step::RemoveProfileBlock { tool, files } => {
+            for f in files {
+                let path = os.expand(f);
+                let Some(prev) = os.read(&path).map_err(|e| format!("{path}: {e}"))? else { continue };
+                if !has_block(&prev, tool) {
+                    continue;
+                }
+                backup::backup_file(os, &path)?;
+                let next = without_block(&prev, tool);
+                undos.push(Undo::WriteFile { path: path.clone(), prev: Some(prev) });
+                os.write(&path, &next).map_err(|e| format!("{path}: {e}"))?;
+            }
+            Ok(())
+        }
+        Step::SetRunKey { name, command, .. } => {
+            undos.push(Undo::RunKey { name: name.clone(), prev: os.run_key_get(name) });
+            os.run_key_set(name, command)
+        }
+        Step::DelRunKey { name, .. } => {
+            if let Some(prev) = os.run_key_get(name) {
+                undos.push(Undo::RunKey { name: name.clone(), prev: Some(prev) });
+                os.run_key_del(name)?;
+            }
+            Ok(())
+        }
+        Step::Start { program, args, process, .. } => {
+            if let Some(p) = process {
+                undos.push(Undo::Kill(p.clone()));
+            }
+            os.spawn(program, args)?;
+            match process {
+                // Verify: the process must actually come up.
+                Some(p) if !wait_for(os, p, true) => Err(format!("{p} did not start")),
+                _ => Ok(()),
+            }
+        }
+        Step::Stop { program, args, process, restart, .. } => {
+            if let Some(r) = restart {
+                undos.push(Undo::Spawn(r.clone()));
+            }
+            if let Some(p) = program {
+                os.run(p, args)?;
+            }
+            if let Some(p) = process {
+                if !wait_for(os, p, false) {
+                    os.kill_process(p)?;
+                }
+            }
+            Ok(())
+        }
+        Step::SetConfigValue { file, format, key, value, .. } => {
+            let path = os.expand(file);
+            backup::backup_file(os, &path)?;
+            let prev = os.read(&path).map_err(|e| format!("{path}: {e}"))?;
+            let next = crate::settings::config_set(prev.as_deref().unwrap_or(""), format, key, value)?;
+            undos.push(Undo::WriteFile { path: path.clone(), prev });
+            os.write(&path, &next).map_err(|e| format!("{path}: {e}"))
+        }
+        Step::WriteConfig { file, content, .. } => {
+            let path = os.expand(file);
+            backup::backup_file(os, &path)?;
+            let prev = os.read(&path).map_err(|e| format!("{path}: {e}"))?;
+            undos.push(Undo::WriteFile { path: path.clone(), prev });
+            os.write(&path, content).map_err(|e| format!("{path}: {e}"))
+        }
+        Step::SetWallpaper { theme, name, bytes } => {
+            let path = format!("{}\\wallpapers\\{theme}-{name}", os.data_dir());
+            os.write_bytes(&path, bytes).map_err(|e| format!("{path}: {e}"))?;
+            undos.push(Undo::Wallpaper { prev: os.wallpaper_get() });
+            os.wallpaper_set(&path)
+        }
+        Step::RestoreOriginals => {
+            for (path, prev) in backup::restore_originals(os)? {
+                undos.push(Undo::WriteFile { path, prev });
+            }
+            Ok(())
+        }
+    }
+}
+
+fn undo(os: &dyn Os, u: &Undo) -> Result<(), String> {
+    match u {
+        Undo::WriteFile { path, prev: Some(c) } => os.write(path, c).map_err(|e| format!("{path}: {e}")),
+        Undo::WriteFile { path, prev: None } => os.remove_file(path).map_err(|e| format!("{path}: {e}")),
+        Undo::WingetUninstall(id) => winget(os, "uninstall", id),
+        Undo::WingetInstall(id) => winget(os, "install", id),
+        Undo::RunKey { name, prev: Some(c) } => os.run_key_set(name, c),
+        Undo::RunKey { name, prev: None } => os.run_key_del(name),
+        Undo::Kill(p) => os.kill_process(p),
+        Undo::Wallpaper { prev: Some(p) } => os.wallpaper_set(p),
+        // There was no wallpaper before: go back to the plain background color.
+        Undo::Wallpaper { prev: None } => os.wallpaper_set(""),
+        Undo::Spawn(cmd) => match cmd.split_first() {
+            Some((prog, args)) => os.spawn(prog, args),
+            None => Ok(()),
+        },
+    }
+}
+
+fn rollback(os: &dyn Os, undos: &[Undo]) -> Vec<String> {
+    undos.iter().rev().filter_map(|u| undo(os, u).err()).collect()
+}
+
+/// Undoes a plan that already succeeded. Returns the errors, if any.
+pub fn revert(os: &dyn Os, journal: &Journal) -> Vec<String> {
+    rollback(os, &journal.0)
+}
+
+/// Runs the plan. On the first failing step, rolls back everything already done.
+/// On success the journal can be kept to undo the whole plan later.
+pub fn run_journal(os: &dyn Os, plan: &Plan) -> (Outcome, Journal) {
+    let mut undos: Vec<Undo> = Vec::new();
+    let mut applied = 0;
+    for step in &plan.steps {
+        if let Err(error) = apply(os, step, &mut undos) {
+            let rollback_errors = rollback(os, &undos);
+            let out = Outcome { ok: false, applied, error: Some(error), rolled_back: true, rollback_errors };
+            return (out, Journal(vec![]));
+        }
+        applied += 1;
+    }
+    (Outcome { ok: true, applied, error: None, rolled_back: false, rollback_errors: vec![] }, Journal(undos))
+}
+
+#[cfg(test)]
+pub fn run(os: &dyn Os, plan: &Plan) -> Outcome {
+    run_journal(os, plan).0
+}

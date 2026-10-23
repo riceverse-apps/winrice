@@ -1,0 +1,27 @@
+[package]
+name = "winrice"
+version = "0.1.0"
+description = "Customize Windows 11 with one click"
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "winrice_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-global-shortcut = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+include_dir = "0.7"
+rusqlite = { version = "0.32", features = ["bundled"] }
+ureq = "2"
+sysinfo = "0.33"
+windows-sys = { version = "0.59", features = ["Win32_System_Power"] }
+sha2 = "0.10"
+zip = { version = "2", default-features = false, features = ["deflate"] }

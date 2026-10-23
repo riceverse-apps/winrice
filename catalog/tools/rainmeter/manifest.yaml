@@ -1,0 +1,40 @@
+id: rainmeter
+name: "Rainmeter"
+category: widgets
+summary:
+  en: "Desktop widgets (skins) for clocks, system stats and more."
+  pt-BR: "Widgets de desktop (skins) para relógios, estatísticas do sistema e mais."
+difficulty: intermediate
+homepage: https://www.rainmeter.net/
+license: "GPL-2.0"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: Rainmeter.Rainmeter
+uninstall:
+  method: winget
+detect:
+  process: Rainmeter.exe
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles%\Rainmeter\Rainmeter.exe'
+activate:
+  start: "Rainmeter.exe"
+  autostart: true
+deactivate:
+  remove_autostart: true
+conflicts: []
+pairs_well_with: []
+changes_on_screen:
+  - en: "Widgets appear on the desktop wallpaper area."
+    pt-BR: "Widgets aparecem na área de trabalho, sobre o papel de parede."
+shortcuts: []
+risks:
+  en: "Skins are community code: install only from trusted sources."
+  pt-BR: "Skins são código da comunidade: instale só de fontes confiáveis."
+how_to_undo:
+  en: "Turn off the toggle; the widgets disappear."
+  pt-BR: "Desative no toggle; os widgets somem."

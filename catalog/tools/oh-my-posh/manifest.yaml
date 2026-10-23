@@ -1,0 +1,46 @@
+id: oh-my-posh
+name: Oh My Posh
+category: terminal
+summary:
+  en: "Custom, colorful prompt for PowerShell."
+  pt-BR: "Prompt colorido e personalizado para o PowerShell."
+difficulty: beginner
+homepage: https://ohmyposh.dev/
+license: MIT
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: JanDeDobbeleer.OhMyPosh
+uninstall:
+  method: winget
+detect:
+  paths: ['%LOCALAPPDATA%\Programs\oh-my-posh\bin\oh-my-posh.exe']
+activate:
+  profile_snippet:
+    files:
+      - '%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+      - '%USERPROFILE%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'
+    content: 'oh-my-posh init pwsh | Invoke-Expression'
+deactivate:
+  remove_autostart: false
+config:
+  paths:
+    - '%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+    - '%USERPROFILE%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'
+  format: powershell
+  backup: true
+conflicts: [starship]
+pairs_well_with: [windows-terminal]
+changes_on_screen:
+  - en: "The PowerShell prompt shows folder, git branch and icons. A Nerd Font is needed for icons."
+    pt-BR: "O prompt do PowerShell mostra pasta, branch do git e ícones. Para os ícones é preciso uma Nerd Font."
+shortcuts: []
+risks:
+  en: "Edits your PowerShell profile (backed up first). Without a Nerd Font some icons look like boxes."
+  pt-BR: "Edita seu perfil do PowerShell (com backup antes). Sem uma Nerd Font alguns ícones aparecem como quadradinhos."
+how_to_undo:
+  en: "Turn off the toggle; the added lines are removed from the profile."
+  pt-BR: "Desative no toggle; as linhas adicionadas são removidas do perfil."

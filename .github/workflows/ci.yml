@@ -1,0 +1,30 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install
+      - run: npm run validate
+      - name: catalog/index.json must be up to date
+        run: git diff --exit-code catalog/index.json
+      - name: winget manifest generator works
+        run: node scripts/make-winget.mjs --version 0.0.0 --url https://github.com/riceverse-apps/winrice/releases/download/v0.0.0/WinRice_0.0.0_x64-setup.exe --sha256 0000000000000000000000000000000000000000000000000000000000000000
+
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: dtolnay/rust-toolchain@stable
+      - run: npm install --prefix app
+      - run: npm --prefix app run build
+      - run: cargo test --manifest-path app/src-tauri/Cargo.toml
+      - run: npm --prefix app run tauri -- build --no-bundle

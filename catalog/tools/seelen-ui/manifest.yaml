@@ -1,0 +1,41 @@
+id: seelen-ui
+name: "Seelen UI"
+category: shell-mod
+summary:
+  en: "Full desktop environment: top bar, dock, launcher and tiling."
+  pt-BR: "Ambiente de desktop completo: barra no topo, dock, lançador e mosaico."
+difficulty: intermediate
+homepage: https://github.com/eythaann/Seelen-UI
+license: "AGPL-3.0"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: Seelen.SeelenUI
+uninstall:
+  method: winget
+detect:
+  process: seelen-ui.exe
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles%\Seelen UI\seelen-ui.exe'
+    - '%LOCALAPPDATA%\Programs\Seelen UI\seelen-ui.exe'
+activate:
+  start: "seelen-ui.exe"
+  autostart: true
+deactivate:
+  remove_autostart: true
+conflicts: []
+pairs_well_with: []
+changes_on_screen:
+  - en: "A top bar and a dock appear, and windows can be tiled."
+    pt-BR: "Aparecem uma barra no topo e uma dock, e as janelas podem ser organizadas em mosaico."
+shortcuts: []
+risks:
+  en: "It replaces several pieces of the desktop at once, so it can clash with other bars and taskbar mods."
+  pt-BR: "Substitui várias partes do desktop de uma vez e pode conflitar com outras barras e mods da barra de tarefas."
+how_to_undo:
+  en: "Turn off the toggle."
+  pt-BR: "Desative no toggle."

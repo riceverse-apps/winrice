@@ -1,0 +1,46 @@
+id: yasb
+name: "YASB Reborn"
+category: status-bar
+summary:
+  en: "Status bar configured with YAML and CSS."
+  pt-BR: "Barra de status configurada com YAML e CSS."
+difficulty: intermediate
+homepage: https://github.com/amnweb/yasb
+license: "MIT"
+requires:
+  windows_min_build: 22000
+  windows_max_build: null
+  admin: false
+install:
+  method: winget
+  id: AmN.yasb
+uninstall:
+  method: winget
+detect:
+  process: yasb.exe
+  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  paths:
+    - '%ProgramFiles%\YASB\yasb.exe'
+    - '%LOCALAPPDATA%\Programs\YASB\yasb.exe'
+activate:
+  start: "yasb.exe"
+  autostart: true
+deactivate:
+  remove_autostart: true
+config:
+  paths:
+    - '%USERPROFILE%\.config\yasb\config.yaml'
+  format: yaml
+  backup: true
+conflicts: []
+pairs_well_with: [komorebi, windows-terminal]
+changes_on_screen:
+  - en: "A bar appears at the top of the screen with clock, workspaces and system widgets."
+    pt-BR: "Aparece uma barra no topo da tela com relógio, áreas de trabalho e widgets do sistema."
+shortcuts: []
+risks:
+  en: "Needs a Nerd Font for icons. The bar can overlap the taskbar."
+  pt-BR: "Precisa de uma Nerd Font para os ícones. A barra pode ficar sobre a barra de tarefas."
+how_to_undo:
+  en: "Turn off the toggle; the bar closes."
+  pt-BR: "Desative no toggle; a barra fecha."

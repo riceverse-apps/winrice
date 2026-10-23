@@ -1,0 +1,35 @@
+id: macos-like
+name: "macOS-like"
+author:
+  name: "WinRice"
+  github: riceverse-apps
+version: 1.0.0
+license: MIT
+description:
+  en: "A top bar, a transparent taskbar and a Spotlight-style launcher for a Mac-inspired desktop."
+  pt-BR: "Barra no topo, barra de tarefas transparente e um lançador estilo Spotlight para um desktop inspirado no Mac."
+tags: [macos, bar, dock, light, minimal]
+difficulty: beginner
+requires:
+  windows_min_build: 22621
+palette:
+  name: soft-dark
+  colors:
+    base: "#1c1c1e"
+    text: "#f2f2f7"
+    accent: "#f28fad"
+components:
+  - tool: yasb
+    required: true
+  - tool: translucenttb
+    required: true
+  - tool: flow-launcher
+    required: false
+  - tool: windhawk
+    # Windhawk mod management is not supported yet: mods are listed here and skipped.
+    mods:
+      - id: windows-11-taskbar-styler
+    required: false
+  - tool: nerd-font
+    font: JetBrainsMono
+    required: true

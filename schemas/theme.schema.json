@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://riceverse.dev/schemas/theme.schema.json",
+  "title": "WinRice theme",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "author",
+    "version",
+    "license",
+    "description",
+    "components"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "i18n": {
+      "type": "object",
+      "required": [
+        "en",
+        "pt-BR"
+      ],
+      "properties": {
+        "en": {
+          "type": "string"
+        },
+        "pt-BR": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "author": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "github": {
+          "type": "string"
+        }
+      }
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "license": {
+      "type": "string"
+    },
+    "description": {
+      "$ref": "#/definitions/i18n"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "difficulty": {
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ]
+    },
+    "requires": {
+      "type": "object",
+      "properties": {
+        "windows_min_build": {
+          "type": "integer"
+        }
+      }
+    },
+    "palette": {
+      "type": "object",
+      "required": [
+        "name",
+        "colors"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "colors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          }
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "tool"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string"
+          },
+          "config": {
+            "type": "string"
+          },
+          "font": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "mods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "settings": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "settings": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "wallpaper": {
+      "type": "string"
+    },
+    "media": {
+      "type": "object",
+      "properties": {
+        "cover": {
+          "type": "string"
+        },
+        "screenshots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "demo": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
