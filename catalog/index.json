@@ -65,7 +65,7 @@
         },
         {
           "path": "manifest.yaml",
-          "sha256": "11fe475316521653361fd4715a522c710e0eda09e76430b8450d0901825983a9"
+          "sha256": "d9b86c69b5c2e9f41baa35171d700c4fb04ff717ae5b2d100a4eaf995635ada5"
         }
       ]
     },
@@ -201,7 +201,7 @@
         },
         {
           "path": "manifest.yaml",
-          "sha256": "571126ba86f4248755c7144faf4f7235fee6ce8552c99100041ea3d85336b4f5"
+          "sha256": "941adfd2be2cffccc8c90535b78e3b840726c42ce85831580b79dfded54c04fb"
         }
       ]
     },
@@ -269,7 +269,7 @@
         },
         {
           "path": "manifest.yaml",
-          "sha256": "0b4a623cc8614206314eab8e5f3280a57cb5c7cd93a5319480a610e3ce03d738"
+          "sha256": "97e219b1141615179acdef7968c1e76bd77289048efe244e0f5da195d1d06368"
         }
       ]
     },

@@ -100,9 +100,7 @@ if (errors.length) {
 const BINARY = /\.(png|jpe?g|webp|gif|bmp|ico)$/i;
 const sha = (path) => {
   let bytes = readFileSync(path);
-  if (!BINARY.test(path)) bytes = Buffer.from(bytes.toString("utf8").replace(/
-/g, "
-"), "utf8");
+  if (!BINARY.test(path)) bytes = Buffer.from(bytes.toString("utf8").replaceAll("\r\n", "\n"), "utf8");
   return createHash("sha256").update(bytes).digest("hex");
 };
 const entry = (kind, dir) => {
