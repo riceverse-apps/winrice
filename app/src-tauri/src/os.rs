@@ -24,6 +24,8 @@ pub trait Os: Send + Sync {
     fn run_key_set(&self, name: &str, command: &str) -> Result<(), String>;
     fn run_key_del(&self, name: &str) -> Result<(), String>;
     fn process_ids(&self, name: &str) -> Vec<u32>;
+    /// Is an MSIX/Appx package with this name (e.g. `Seelen.SeelenUI`) installed for the current user?
+    fn appx_installed(&self, name: &str) -> bool;
     fn windows_build(&self) -> u32;
     fn windows_edition(&self) -> String;
     fn data_dir(&self) -> String;
@@ -221,6 +223,14 @@ mod real {
             if code == 0 { Ok(()) } else { Err(format!("reg delete failed ({code})")) }
         }
 
+        fn appx_installed(&self, name: &str) -> bool {
+            // MSIX packages are registered per user here; reading it is fast and needs no admin.
+            let key = r"HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages";
+            let out = hidden("reg", &["query".into(), key.into(), "/f".into(), format!("{name}_"), "/k".into()]).output();
+            let needle = format!("\\packages\\{}_", name.to_lowercase());
+            out.map(|o| String::from_utf8_lossy(&o.stdout).to_lowercase().contains(&needle)).unwrap_or(false)
+        }
+
         fn process_ids(&self, name: &str) -> Vec<u32> {
             let out = hidden("tasklist", &["/FI".into(), format!("IMAGENAME eq {name}"), "/NH".into(), "/FO".into(), "CSV".into()]).output();
             let Ok(out) = out else { return vec![] };
@@ -265,6 +275,7 @@ pub mod fake {
         pub processes: BTreeSet<String>,
         pub winget: BTreeSet<String>,
         pub wallpaper: Option<String>,
+        pub appx: BTreeSet<String>,
     }
 
     pub struct FakeOs {
@@ -356,6 +367,9 @@ pub mod fake {
             let mut w = self.world.lock().unwrap();
             if let Some(id) = args.iter().position(|a| a == "--id").and_then(|i| args.get(i + 1)) {
                 let files = self.packages.lock().unwrap().get(id).cloned().unwrap_or_default();
+                if args[0] == "install" && w.winget.contains(id) {
+                    return Ok(-1978335189); // 0x8A15002B: already installed, no update
+                }
                 match args[0].as_str() {
                     "install" => {
                         for f in files {
@@ -413,6 +427,9 @@ pub mod fake {
             self.tick()?;
             self.world.lock().unwrap().run_keys.remove(name);
             Ok(())
+        }
+        fn appx_installed(&self, name: &str) -> bool {
+            self.world.lock().unwrap().appx.contains(name)
         }
         fn process_ids(&self, _name: &str) -> Vec<u32> {
             self.pids.lock().unwrap().clone()

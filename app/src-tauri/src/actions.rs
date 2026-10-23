@@ -74,6 +74,7 @@ pub struct ToolStatus {
 
 pub fn status(os: &dyn Os, m: &Manifest) -> ToolStatus {
     let installed = m.detect.paths.iter().any(|p| os.exists(&os.expand(p)))
+        || m.detect.appx.iter().any(|a| os.appx_installed(a))
         || m.detect.process.as_deref().is_some_and(|p| os.process_running(p));
     let toggleable = m.activate.is_some() && m.deactivate.is_some();
     let active = installed

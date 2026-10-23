@@ -18,6 +18,8 @@ uninstall:
   method: winget
 detect:
   process: seelen-ui.exe
+  # MSIX package: found through the package registration, not through a file path.
+  appx: [Seelen.SeelenUI]
   # UNVERIFIED: install paths must be confirmed in a clean VM before release.
   paths:
     - '%ProgramFiles%\Seelen UI\seelen-ui.exe'

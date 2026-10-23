@@ -99,9 +99,20 @@ pub fn with_block(text: &str, tool: &str, content: &str) -> String {
     format!("{base}{}\n{content}\n{}\n", marker(tool, true), marker(tool, false))
 }
 
-fn winget(os: &dyn Os, verb: &str, id: &str) -> Result<(), String> {
+/// winget exit codes that mean "this package is already installed and up to date"
+/// (0x8A15002B: no applicable update, 0x8A150061: package already installed).
+const ALREADY_INSTALLED: [i32; 2] = [-1978335189, -1978335135];
+
+/// Runs winget. Returns true when `install` found the package already there.
+fn winget(os: &dyn Os, verb: &str, id: &str) -> Result<bool, String> {
     let code = os.run("winget", &winget_args(verb, id))?;
-    if code == 0 { Ok(()) } else { Err(format!("winget {verb} {id} failed (exit code {code})")) }
+    if code == 0 {
+        Ok(false)
+    } else if verb == "install" && ALREADY_INSTALLED.contains(&code) {
+        Ok(true)
+    } else {
+        Err(format!("winget {verb} {id} failed (exit code {code})"))
+    }
 }
 
 fn wait_for(os: &dyn Os, process: &str, want_running: bool) -> bool {
@@ -118,7 +129,11 @@ fn apply(os: &dyn Os, step: &Step, undos: &mut Vec<Undo>) -> Result<(), String> 
     match step {
         Step::WingetInstall { id, .. } => {
             undos.push(Undo::WingetUninstall(id.clone()));
-            winget(os, "install", id)
+            // Already there: fine, but it was not WinRice that installed it, so undoing must not remove it.
+            if winget(os, "install", id)? {
+                undos.pop();
+            }
+            Ok(())
         }
         Step::WingetUninstall { id, .. } => {
             winget(os, "uninstall", id)?;
@@ -221,8 +236,8 @@ fn undo(os: &dyn Os, u: &Undo) -> Result<(), String> {
     match u {
         Undo::WriteFile { path, prev: Some(c) } => os.write(path, c).map_err(|e| format!("{path}: {e}")),
         Undo::WriteFile { path, prev: None } => os.remove_file(path).map_err(|e| format!("{path}: {e}")),
-        Undo::WingetUninstall(id) => winget(os, "uninstall", id),
-        Undo::WingetInstall(id) => winget(os, "install", id),
+        Undo::WingetUninstall(id) => winget(os, "uninstall", id).map(|_| ()),
+        Undo::WingetInstall(id) => winget(os, "install", id).map(|_| ()),
         Undo::RunKey { name, prev: Some(c) } => os.run_key_set(name, c),
         Undo::RunKey { name, prev: None } => os.run_key_del(name),
         Undo::Kill(p) => os.kill_process(p),

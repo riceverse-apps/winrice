@@ -18,6 +18,8 @@ uninstall:
   method: winget
 detect:
   process: TranslucentTB.exe
+  # MSIX package: found through the package registration, not through a file path.
+  appx: [CharlesMilette.TranslucentTB]
   # UNVERIFIED: install paths must be confirmed in a clean VM before release.
   paths:
     - '%LOCALAPPDATA%\Microsoft\WindowsApps\TranslucentTB.exe'

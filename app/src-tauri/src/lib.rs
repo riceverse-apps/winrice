@@ -16,6 +16,8 @@ mod tests3;
 mod tests4;
 #[cfg(test)]
 mod tests5;
+#[cfg(test)]
+mod tests6;
 mod theme;
 mod themeops;
 mod widget;
@@ -176,6 +178,11 @@ fn record(app: &App, plan: &Plan, outcome: &Outcome, journal: Option<&str>) -> i
 /// Runs a plan and logs it. With `keep_undo` the history entry can be undone later.
 fn execute(app: &App, plan: &Plan, keep_undo: bool) -> (Outcome, Journal, i64) {
     let _guard = app.op_lock.lock().unwrap();
+    execute_locked(app, plan, keep_undo)
+}
+
+/// Same, for callers that already hold `op_lock`.
+fn execute_locked(app: &App, plan: &Plan, keep_undo: bool) -> (Outcome, Journal, i64) {
     let (outcome, journal) = engine::run_journal(&app.os, plan);
     let json = (outcome.ok && keep_undo).then(|| journal.to_json());
     let id = record(app, plan, &outcome, json.as_deref());
@@ -253,8 +260,12 @@ fn run_action(
 ) -> Result<ActionResult, String> {
     let m = find(&app, &id)?;
     let act = Action::parse(&action).ok_or("unknown_action")?;
+    // Plan AND run under the same lock: a duplicate request (double click) that waited here
+    // re-plans against the state the first one left, and is refused ("already installed").
+    let guard = app.op_lock.lock().unwrap();
     let plan = actions::plan(&app.os, &app.manifests(), &m, act, resolve_conflicts).map_err(|e| e.to_string())?;
-    let (outcome, journal, history_id) = execute(&app, &plan, true);
+    let (outcome, journal, history_id) = execute_locked(&app, &plan, true);
+    drop(guard);
     if !outcome.ok || plan.steps.is_empty() {
         return Ok(ActionResult { outcome, token: None, try_seconds: None });
     }
@@ -977,3 +988,4 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running WinRice");
 }
+

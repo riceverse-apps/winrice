@@ -76,10 +76,13 @@ export function cancel() {
 }
 
 export async function confirm(tryMode = false) {
-  if (!runner) return;
+  // Take the action out of the shared slot first: a second click (or Enter) must find nothing to run.
+  const run = runner;
+  if (!run || op.busy) return;
+  runner = null;
   op.busy = true;
   try {
-    const res = await runner(tryMode);
+    const res = await run(tryMode);
     if (!res.outcome.ok) {
       op.notice = { kind: "error", text: t("plan.failedRolledBack", { error: res.outcome.error ?? "" }) };
     } else if (res.token !== null && res.try_seconds !== null) {

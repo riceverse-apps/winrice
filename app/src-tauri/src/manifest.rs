@@ -115,6 +115,9 @@ pub struct Uninstall {
 pub struct Detect {
     #[serde(default)]
     pub process: Option<String>,
+    /// MSIX/Appx package names, for tools that are installed as Store-style packages.
+    #[serde(default)]
+    pub appx: Vec<String>,
     #[serde(default)]
     pub paths: Vec<String>,
 }

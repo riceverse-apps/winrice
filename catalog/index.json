@@ -201,7 +201,7 @@
         },
         {
           "path": "manifest.yaml",
-          "sha256": "8a238a33afb65d19a44ab7e81ba5c0424cf01f3664dd4fda3f47267dc7059b88"
+          "sha256": "571126ba86f4248755c7144faf4f7235fee6ce8552c99100041ea3d85336b4f5"
         }
       ]
     },
@@ -269,7 +269,7 @@
         },
         {
           "path": "manifest.yaml",
-          "sha256": "961a69886196a25f6bdf0fd6348d3082bf7f74fd62461898c1736c70224db3a1"
+          "sha256": "0b4a623cc8614206314eab8e5f3280a57cb5c7cd93a5319480a610e3ce03d738"
         }
       ]
     },

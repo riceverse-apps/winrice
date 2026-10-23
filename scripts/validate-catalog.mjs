@@ -95,11 +95,21 @@ if (errors.length) {
 
 // The app downloads this index to get new tools/themes without an update; every file
 // is listed with its SHA-256 so the app can verify what it downloads.
+// The repository stores text with LF (see .gitattributes) and the app downloads those bytes,
+// so hash text files with LF even when this runs on a Windows checkout that has CRLF.
+const BINARY = /\.(png|jpe?g|webp|gif|bmp|ico)$/i;
+const sha = (path) => {
+  let bytes = readFileSync(path);
+  if (!BINARY.test(path)) bytes = Buffer.from(bytes.toString("utf8").replace(/
+/g, "
+"), "utf8");
+  return createHash("sha256").update(bytes).digest("hex");
+};
 const entry = (kind, dir) => {
   const base = join(root, "catalog", kind, dir);
   return {
     id: dir,
-    files: walk(base).sort().map((f) => ({ path: f, sha256: createHash("sha256").update(readFileSync(join(base, f))).digest("hex") })),
+    files: walk(base).sort().map((f) => ({ path: f, sha256: sha(join(base, f)) })),
   };
 };
 writeFileSync(
