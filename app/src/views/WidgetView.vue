@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useI18n } from "vue-i18n";
-import { api, pick, type ActiveTheme, type Profile, type Snapshot, type ToolView, type WidgetSettings } from "@/api";
+import { api, pick, type ActiveTheme, type PcInfo, type Profile, type Snapshot, type ToolView, type WidgetSettings } from "@/api";
 import { errorText, version } from "@/composables/operations";
 import { bps, bytes, clock, duration } from "@/format";
 import Spark from "@/components/Spark.vue";
@@ -26,6 +26,7 @@ const profiles = ref<Profile[]>([]);
 const paused = ref<string[] | null>(null);
 const theme = ref<ActiveTheme | null>(null);
 const snap = ref<Snapshot | null>(null);
+const pc = ref<PcInfo | null>(null);
 const message = ref<{ kind: "ok" | "error"; text: string } | null>(null);
 const busy = ref<string | null>(null);
 const confirming = ref<string | null>(null);
@@ -83,6 +84,14 @@ onBeforeUnmount(() => {
   unlisten.forEach((u) => u());
 });
 watch(version, loadAll);
+// "My PC" is read once, and only when it is switched on (it asks Windows, which takes a second).
+watch(
+  () => settings.value?.metrics.includes("pc"),
+  async (on) => {
+    if (on && !pc.value) pc.value = await api.pcInfo().catch(() => null);
+  },
+  { immediate: true },
+);
 
 // ---- tools
 const shown = computed(() => {
@@ -320,6 +329,19 @@ const openMain = () => invoke("open_main_window");
         <div class="line"><span>{{ t("widget.system") }}</span><b>{{ t("widget.uptime", { t: duration(snap.system.uptime_s) }) }}</b></div>
         <p class="muted small">{{ snap.system.os }}</p>
         <p v-if="snap.system.battery" class="muted small">🔋 {{ snap.system.battery.percent }}% {{ snap.system.battery.charging ? "⚡" : "" }}</p>
+      </div>
+
+      <div v-if="has('pc') && pc" class="metric">
+        <div class="line"><span>{{ t("widget.pc.title") }}</span><b>{{ pc.model }}</b></div>
+        <p class="muted small">{{ pc.maker }} · {{ pc.board }}</p>
+        <p class="muted small">{{ pc.cpu }}</p>
+        <p class="muted small">{{ t("widget.pc.bios", { v: pc.bios }) }}</p>
+        <p class="muted small">{{ pc.windows }}</p>
+        <p v-for="g in pc.gpus" :key="g.name" class="muted small">
+          {{ g.name }} · {{ t("widget.pc.driver", { v: g.driver_version, d: g.driver_date ?? t("widget.unknown") }) }}
+          <b v-if="g.driver_old"> · {{ t("widget.pc.old") }}</b>
+        </p>
+        <p class="muted small">{{ t("widget.pc.hint") }}</p>
       </div>
 
       <div v-if="has('sensors')" class="metric">

@@ -6,7 +6,9 @@ mod hardware;
 mod manifest;
 mod net;
 mod os;
+mod pcinfo;
 mod profiles;
+mod selftest;
 mod settings;
 mod store;
 #[cfg(test)]
@@ -560,6 +562,11 @@ fn hardware_snapshot(app: State<App>) -> hardware::Snapshot {
 }
 
 #[tauri::command(async)]
+fn pc_info() -> Option<pcinfo::PcInfo> {
+    pcinfo::read()
+}
+
+#[tauri::command(async)]
 fn list_profiles(app: State<App>) -> Vec<ProfileView> {
     app.store.lock().unwrap().profiles().into_iter().map(|(name, tools)| ProfileView { name, tools }).collect()
 }
@@ -858,6 +865,10 @@ pub fn run() {
     if let Some(code) = elevated::run_if_requested() {
         std::process::exit(code);
     }
+    // `winrice.exe --selftest <file>`: exercises the engine for real; only runs inside Windows Sandbox.
+    if let Some(code) = selftest::run_if_requested() {
+        std::process::exit(code);
+    }
     use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
 
     let os = RealOs;
@@ -967,6 +978,7 @@ pub fn run() {
             delete_theme,
             sync_catalog,
             hardware_snapshot,
+            pc_info,
             list_profiles,
             save_profile,
             delete_profile,

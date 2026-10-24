@@ -12,7 +12,7 @@ use tauri::{AppHandle, Manager, PhysicalPosition, WebviewUrl, WebviewWindow, Web
 pub const FLYOUT: &str = "flyout";
 pub const FLOAT: &str = "widget";
 pub const TRAY_ID: &str = "winrice-tray";
-pub const METRICS: [&str; 7] = ["cpu", "gpu", "ram", "disk", "net", "system", "sensors"];
+pub const METRICS: [&str; 8] = ["cpu", "gpu", "ram", "disk", "net", "system", "pc", "sensors"];
 const CORNERS: [&str; 4] = ["top-left", "top-right", "bottom-left", "bottom-right"];
 const LAYERS: [&str; 3] = ["top", "normal", "bottom"];
 

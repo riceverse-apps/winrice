@@ -104,6 +104,15 @@ export interface Snapshot {
   sensors: { available: boolean; reason: string; cpu_temp_c: number | null; gpu_temp_c: number | null };
   interval_s: number;
 }
+export interface PcInfo {
+  maker: string;
+  model: string;
+  cpu: string;
+  board: string;
+  bios: string;
+  windows: string;
+  gpus: { name: string; driver_version: string; driver_date: string | null; driver_old: boolean }[];
+}
 export interface WidgetSettings {
   flyout: boolean;
   floating: boolean;
@@ -172,6 +181,7 @@ export const api = {
   openUrl: (url: string) => invoke<void>("open_url", { url }),
   getGlossary: () => invoke<GlossaryTerm[]>("get_glossary"),
   hardwareSnapshot: () => invoke<Snapshot>("hardware_snapshot"),
+  pcInfo: () => invoke<PcInfo | null>("pc_info"),
   widgetSettings: () => invoke<WidgetSettings>("get_widget_settings"),
   setWidgetSettings: (settings: WidgetSettings) => invoke<WidgetSaved>("set_widget_settings", { settings }),
   setTrayLabels: (open: string, widgetLabel: string, quit: string) => invoke<void>("set_tray_labels", { open, widgetLabel, quit }),

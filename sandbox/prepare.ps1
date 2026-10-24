@@ -12,6 +12,7 @@ param(
   [switch]$Launch,
   # Unattended: the Sandbox verifies every tool and collects the results by itself.
   [switch]$Auto,
+  [switch]$SelfTest,
   # With -Auto: verify only these tool ids (comma separated)
   [string]$Only = ""
 )
@@ -34,7 +35,7 @@ if (-not (Get-Command WindowsSandbox.exe -ErrorAction SilentlyContinue)) {
 New-Item -ItemType Directory -Force $stage | Out-Null
 New-Item -ItemType Directory -Force (Join-Path $stage "app") | Out-Null
 Copy-Item $Exe (Join-Path $stage "app\winrice.exe") -Force
-foreach ($f in "bootstrap.ps1", "verify-tools.ps1", "collect.ps1", "auto.ps1") { Copy-Item (Join-Path $PSScriptRoot $f) $stage -Force }
+foreach ($f in "bootstrap.ps1", "verify-tools.ps1", "collect.ps1", "auto.ps1", "selftest.ps1") { Copy-Item (Join-Path $PSScriptRoot $f) $stage -Force }
 
 # the in-sandbox shortcuts (.cmd avoids execution-policy prompts)
 Set-Content (Join-Path $stage "1-VERIFY-TOOLS.cmd") "@echo off`r`npowershell -NoProfile -ExecutionPolicy Bypass -File C:\WinRiceTest\verify-tools.ps1`r`npause" -Encoding ASCII
@@ -45,7 +46,8 @@ Push-Location $repo
 try { node sandbox\export-tools.mjs (Join-Path $stage "tools.json") } finally { Pop-Location }
 
 if ($Only) { Set-Content (Join-Path $stage "only.txt") $Only -Encoding ASCII } else { Remove-Item (Join-Path $stage "only.txt") -ErrorAction SilentlyContinue }
-$entry = if ($Auto) { "auto.ps1" } else { "bootstrap.ps1" }
+$entry = if ($SelfTest) { "selftest.ps1" } elseif ($Auto) { "auto.ps1" } else { "bootstrap.ps1" }
+if ($SelfTest) { Remove-Item (Join-Path $stage "selftest") -Recurse -Force -ErrorAction SilentlyContinue }
 # results of an older run would be mistaken for new ones
 if ($Auto) { Remove-Item (Join-Path $stage "results"), (Join-Path $stage "report") -Recurse -Force -ErrorAction SilentlyContinue }
 $wsb = @"

@@ -377,6 +377,13 @@
       "open": "Open WinRice",
       "widget": "Show or hide the widget",
       "quit": "Quit"
+    },
+    "pc": {
+      "title": "My PC",
+      "bios": "BIOS {v}",
+      "driver": "Driver {v} ({d})",
+      "old": "older than 2 years",
+      "hint": "Read-only: WinRice does not install drivers. Check Windows Update or the maker's website."
     }
   },
   "widgetCfg": {
@@ -411,7 +418,8 @@
       "disk": "Disks",
       "net": "Network",
       "system": "System and battery",
-      "sensors": "Temperatures and fans"
+      "sensors": "Temperatures and fans",
+      "pc": "My PC (model, BIOS, graphics driver)"
     },
     "tools": "Tools in the widget",
     "toolsHint": "Tick the tools to show and use the arrows to change their order.",

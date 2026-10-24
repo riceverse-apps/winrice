@@ -8,7 +8,7 @@ const { t } = useI18n();
 const s = ref<WidgetSettings | null>(null);
 const tools = ref<ToolView[]>([]);
 const warning = ref("");
-const METRICS = ["cpu", "gpu", "ram", "disk", "net", "system", "sensors"];
+const METRICS = ["cpu", "gpu", "ram", "disk", "net", "system", "pc", "sensors"];
 
 onMounted(async () => {
   s.value = await api.widgetSettings();
