@@ -18,10 +18,9 @@ uninstall:
   method: winget
 detect:
   process: zebar.exe
-  # UNVERIFIED: exact install folder must be confirmed in a clean VM.
+  # Verified in a clean Windows 11 Sandbox: installs with winget, starts, and the process appears (2026-10-24).
   paths:
     - '%ProgramFiles%\glzr.io\Zebar\zebar.exe'
-    - '%LOCALAPPDATA%\Programs\Zebar\zebar.exe'
 activate:
   start: "zebar.exe"
   autostart: true

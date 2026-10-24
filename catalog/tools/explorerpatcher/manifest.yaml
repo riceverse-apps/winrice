@@ -17,10 +17,9 @@ install:
 uninstall:
   method: winget
 detect:
-  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  # Verified in a clean Windows 11 Sandbox (winget install, 2026-10-24).
   paths:
     - '%ProgramFiles%\ExplorerPatcher\ep_gui.dll'
-    - '%APPDATA%\ExplorerPatcher\ep_taskbar.dll'
 conflicts: [startallback]
 pairs_well_with: []
 changes_on_screen:

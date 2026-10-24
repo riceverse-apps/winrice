@@ -61,6 +61,7 @@ foreach ($t in $tools) {
   $t0 = Get-Date
   $inst = Run-Cmd "winget" @("install", "--id", $t.install.id, "-e", "--silent", "--accept-package-agreements", "--accept-source-agreements", "--source", "winget", "--disable-interactivity") 900
   $r.install_exit = $inst.exit
+  if ($inst.exit -ne 0) { $r.install_output = ($inst.output -split "`n" | Select-Object -Last 12) -join "`n" }
   Refresh-Path
 
   $r.declared_paths = @($t.detect.paths | ForEach-Object { [ordered]@{ path = $_; exists = [bool](Test-Path (Expand $_)) } })
@@ -70,27 +71,55 @@ foreach ($t in $tools) {
   if ($t.detect.process) { $names += $t.detect.process }
   if ($t.activate.start) { $names += (Split-Cmd $t.activate.start).program }
   if ($t.deactivate.stop) { $names += (Split-Cmd $t.deactivate.stop).program }
+  foreach ($p in @($t.detect.paths)) { if ($p) { $names += (Split-Path (Expand $p) -Leaf) } }
   $r.found_exes = [ordered]@{}
   foreach ($n in ($names | Select-Object -Unique)) { $r.found_exes[$n] = @(Find-Exe $n) }
   $cmd = Get-Command ($t.detect.process) -ErrorAction SilentlyContinue
   $r.on_path = if ($cmd) { $cmd.Source } else { $null }
 
   # start it
-  if ($t.activate.start) {
-    $s = Split-Cmd $t.activate.start
-    $exe = $null
-    foreach ($d in $r.declared_paths) { if ($d.exists -and (Split-Path $d.path -Leaf) -ieq $s.program) { $exe = Expand $d.path } }
-    if (-not $exe -and $r.found_exes[$s.program].Count -gt 0) { $exe = $r.found_exes[$s.program][0] }
-    if (-not $exe) { $exe = $s.program }
-    $r.start_used = "$exe $($s.args -join ' ')"
+  if ($t.activate.start -or $t.activate.start_appx) {
+    if ($t.activate.start_appx) {
+      $pfn = (Get-AppxPackage -Name $t.activate.start_appx.name | Select-Object -First 1).PackageFamilyName
+      $r.package_family = $pfn
+      $exe = "explorer.exe"
+      $sargs = @("shell:AppsFolder\$pfn!$($t.activate.start_appx.app)")
+    } else {
+      $s = Split-Cmd $t.activate.start
+      $exe = $null
+      # the FIRST existing declared path is the one WinRice uses
+      foreach ($d in $r.declared_paths) { if (-not $exe -and $d.exists -and (Split-Path $d.path -Leaf) -ieq $s.program) { $exe = Expand $d.path } }
+      if (-not $exe -and $r.found_exes[$s.program].Count -gt 0) { $exe = $r.found_exes[$s.program][0] }
+      if (-not $exe) { $exe = $s.program }
+      $sargs = @($s.args)
+    }
+    $r.start_used = "$exe $($sargs -join ' ')"
     $before = Proc-Names
     $since = Get-Date
-    try { Start-Process -FilePath $exe -ArgumentList $s.args -WindowStyle Hidden } catch { $r.start_error = "$_" }
-    Start-Sleep -Seconds 10
+    $splat = @{ FilePath = $exe; WindowStyle = "Hidden" }
+    if ($sargs.Count -gt 0) { $splat.ArgumentList = $sargs }   # an empty ArgumentList is an error in Windows PowerShell 5.1
+    try { Start-Process @splat } catch { $r.start_error = "$_" }
+    # wait (up to 40 s) for the process WinRice checks for
+    $waited = 0
+    while ($waited -lt 40) {
+      Start-Sleep -Seconds 2; $waited += 2
+      if ($t.detect.process -and ((Proc-Names) -contains $t.detect.process)) { Start-Sleep -Seconds 3; break }
+    }
+    $r.seconds_waited = $waited
     $after = Proc-Names
     $r.new_processes = @($after | Where-Object { $before -notcontains $_ })
     $r.expected_process_running = [bool]($t.detect.process -and ($after -contains $t.detect.process))
     $r.new_config_files = Recent-Files $since
+    $r.config_samples = @()
+    foreach ($cp in @($t.config.paths)) {
+      if (-not $cp) { continue }
+      $full = Expand $cp
+      if (Test-Path $full) {
+        $text = Get-Content $full -Raw -ErrorAction SilentlyContinue
+        if ($text -and $text.Length -gt 8000) { $text = $text.Substring(0, 8000) }
+        $r.config_samples += [ordered]@{ path = $cp; content = $text }
+      }
+    }
 
     # widget quick actions (while the tool runs)
     $r.quick_actions = @()

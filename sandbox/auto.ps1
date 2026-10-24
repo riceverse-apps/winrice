@@ -6,7 +6,8 @@ New-Item -ItemType Directory -Force "$Root\results" | Out-Null
 "started $(Get-Date -Format s)" | Set-Content "$Root\results\RUNNING.txt"
 
 & "$Root\bootstrap.ps1"
-& "$Root\verify-tools.ps1"
+$only = if (Test-Path "$Root\only.txt") { (Get-Content "$Root\only.txt" -Raw).Trim() -split '[,\s]+' | Where-Object { $_ } } else { @() }
+if ($only.Count -gt 0) { & "$Root\verify-tools.ps1" -Only $only } else { & "$Root\verify-tools.ps1" }
 & "$Root\collect.ps1"
 
 Remove-Item "$Root\results\RUNNING.txt" -ErrorAction SilentlyContinue

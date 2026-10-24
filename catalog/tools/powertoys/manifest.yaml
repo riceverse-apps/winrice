@@ -18,7 +18,7 @@ uninstall:
   method: winget
 detect:
   process: PowerToys.exe
-  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  # Verified in a clean Windows 11 Sandbox: installs with winget, starts, and the process appears (2026-10-24).
   paths:
     - '%ProgramFiles%\PowerToys\PowerToys.exe'
     - '%LOCALAPPDATA%\PowerToys\PowerToys.exe'

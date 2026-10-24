@@ -9,7 +9,7 @@ use crate::store::Store;
 
 pub(crate) const GLAZE_EXE: &str = r"%ProgramFiles%\glzr.io\GlazeWM\glazewm.exe";
 pub(crate) const GLAZE_CFG: &str = r"%USERPROFILE%\.glzr\glazewm\config.yaml";
-pub(crate) const OMP_EXE: &str = r"%LOCALAPPDATA%\Programs\oh-my-posh\bin\oh-my-posh.exe";
+pub(crate) const OMP_EXE: &str = r"%LOCALAPPDATA%\Microsoft\WindowsApps\oh-my-posh.exe";
 pub(crate) const PS7_PROFILE: &str = r"%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1";
 pub(crate) const PS5_PROFILE: &str = r"%USERPROFILE%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1";
 

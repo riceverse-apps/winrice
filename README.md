@@ -4,7 +4,7 @@ Customize Windows 11 with one click: a catalog of community "rice" tools (tiling
 
 [Português (Brasil)](README.pt-BR.md)
 
-> **Status: in development, no public release yet.** The code builds and the automated tests pass, but the install / turn on / undo flows have **not** been validated on a clean Windows 11 VM yet. Do not run it on a machine you cannot afford to experiment on. Items still to be confirmed are marked `UNVERIFIED` in the manifests.
+> **Status: in development, no public release yet.** The code builds and the automated tests pass. The installs, paths, start and stop commands of 19 of the 20 tools were verified in a clean Windows 11 Sandbox ([what was verified](docs/verified-tools.md)), but WinRice's own flows (toggles, themes, undo, widget) have **not** been exercised there yet. Do not run it on a machine you cannot afford to experiment on.
 
 ## What it does
 

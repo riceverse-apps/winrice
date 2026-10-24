@@ -18,10 +18,9 @@ uninstall:
   method: winget
 detect:
   process: yasb.exe
-  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  # Verified in a clean Windows 11 Sandbox: installs with winget, starts, and the process appears (2026-10-24).
   paths:
     - '%ProgramFiles%\YASB\yasb.exe'
-    - '%LOCALAPPDATA%\Programs\YASB\yasb.exe'
 activate:
   start: "yasb.exe"
   autostart: true

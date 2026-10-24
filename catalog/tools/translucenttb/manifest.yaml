@@ -20,7 +20,8 @@ detect:
   process: TranslucentTB.exe
   # MSIX package: found through the package registration, not through a file path.
   appx: [CharlesMilette.TranslucentTB]
-  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  # UNVERIFIED: `winget install` FAILED in a clean Sandbox with 0x80073CF3 (a framework dependency of the MSIX package was
+  # missing there). Its install path and process name are therefore not confirmed yet; retry on a real PC.
   paths:
     - '%LOCALAPPDATA%\Microsoft\WindowsApps\TranslucentTB.exe'
 activate:

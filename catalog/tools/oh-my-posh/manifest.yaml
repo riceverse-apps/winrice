@@ -17,7 +17,10 @@ install:
 uninstall:
   method: winget
 detect:
-  paths: ['%LOCALAPPDATA%\Programs\oh-my-posh\bin\oh-my-posh.exe']
+  # Verified in a clean Windows 11 Sandbox: winget installs it as an MSIX package (ohmyposh.cli) and the program
+  # is the execution alias below. `oh-my-posh init pwsh | Invoke-Expression` runs without errors.
+  appx: [ohmyposh.cli]
+  paths: ['%LOCALAPPDATA%\Microsoft\WindowsApps\oh-my-posh.exe']
 activate:
   profile_snippet:
     files:

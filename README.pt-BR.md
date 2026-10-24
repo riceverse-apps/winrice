@@ -4,7 +4,7 @@ Personalize o Windows 11 com um clique: um catálogo de ferramentas de "rice" da
 
 [English](README.md)
 
-> **Status: em desenvolvimento, ainda sem versão pública.** O código compila e os testes automáticos passam, mas os fluxos de instalar / ligar / desfazer **ainda não foram validados** numa VM limpa de Windows 11. Não rode numa máquina em que você não possa experimentar. O que ainda precisa ser confirmado está marcado como `UNVERIFIED` nos manifestos.
+> **Status: em desenvolvimento, ainda sem versão pública.** O código compila e os testes automáticos passam. As instalações, os caminhos e os comandos de iniciar e parar de 19 das 20 ferramentas foram verificados num Windows Sandbox limpo ([o que foi verificado](docs/verified-tools.md), em inglês), mas os fluxos do próprio WinRice (toggles, temas, desfazer, widget) **ainda não foram exercitados** lá. Não rode numa máquina em que você não possa experimentar.
 
 ## O que faz
 

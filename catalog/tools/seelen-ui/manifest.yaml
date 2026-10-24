@@ -26,7 +26,9 @@ detect:
     - '%LOCALAPPDATA%\Microsoft\WindowsApps\slu.exe'
 activate:
   # MSIX app: it has no program on PATH, so it is started through its package.
-  # Application id "App" read from the installed package manifest (AppxManifest.xml).
+  # Application id "App" read from the installed package manifest (AppxManifest.xml). Starting it this way worked on a real
+  # Windows 11 PC; inside the Sandbox the app did not appear (no usable desktop session for MSIX launch), so it is not
+  # reproduced there.
   start_appx: { name: Seelen.SeelenUI, app: App }
   # Seelen starts itself at every sign-in through this scheduled task (it runs with the highest privileges, so
   # changing it asks for administrator permission). WinRice owns that switch so the toggle also holds after a restart.

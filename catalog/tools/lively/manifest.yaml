@@ -18,9 +18,8 @@ uninstall:
   method: winget
 detect:
   process: Lively.exe
-  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  # Verified in a clean Windows 11 Sandbox: installs with winget, starts, and the process appears (2026-10-24).
   paths:
-    - '%LOCALAPPDATA%\Programs\Lively Wallpaper\Lively.exe'
     - '%ProgramFiles%\Lively Wallpaper\Lively.exe'
 activate:
   start: "Lively.exe"

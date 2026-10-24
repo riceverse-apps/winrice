@@ -11,12 +11,18 @@ if (-not (Has-Winget)) {
   New-Item -ItemType Directory -Force $tmp | Out-Null
   $ProgressPreference = "SilentlyContinue"
   try {
-    Invoke-WebRequest "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -OutFile "$tmp\vclibs.appx"
-    Invoke-WebRequest "https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx" -OutFile "$tmp\xaml.appx"
-    Invoke-WebRequest "https://aka.ms/getwinget" -OutFile "$tmp\winget.msixbundle"
-    Add-AppxPackage "$tmp\vclibs.appx"
-    Add-AppxPackage "$tmp\xaml.appx"
-    Add-AppxPackage "$tmp\winget.msixbundle"
+    # The winget release ships the exact framework packages it needs (VCLibs, UI.Xaml, Windows App
+    # Runtime...); a clean Sandbox has none of them, and the newest winget will not install without.
+    $base = "https://github.com/microsoft/winget-cli/releases/latest/download"
+    Invoke-WebRequest "$base/DesktopAppInstaller_Dependencies.zip" -OutFile "$tmp\deps.zip"
+    Invoke-WebRequest "$base/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -OutFile "$tmp\winget.msixbundle"
+    Expand-Archive "$tmp\deps.zip" -DestinationPath "$tmp\deps" -Force
+    # install every x64 dependency; "already installed / newer version present" is fine
+    Get-ChildItem "$tmp\deps" -Recurse -Filter *.appx | Where-Object { $_.FullName -match '\\x64\\' } | ForEach-Object {
+      try { Add-AppxPackage -Path $_.FullName -ErrorAction Stop; Write-Host "  dependency installed: $($_.Name)" }
+      catch { Write-Host "  dependency skipped: $($_.Name) ($($_.Exception.Message.Split([char]10)[0]))" }
+    }
+    Add-AppxPackage -Path "$tmp\winget.msixbundle" -ErrorAction Stop
   } catch { Write-Warning "Could not install winget automatically: $_" }
   $env:Path += ";$env:LOCALAPPDATA\Microsoft\WindowsApps"
 }
