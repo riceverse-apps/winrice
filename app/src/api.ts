@@ -17,6 +17,7 @@ export interface Manifest {
   shortcuts: ({ keys: string } & I18nText)[];
   risks?: I18nText;
   how_to_undo?: I18nText;
+  activate?: { autostart_task?: string };
   widget?: { show_by_default: boolean; quick_actions: { id: string; label: I18nText; command: string }[] };
   settings: Setting[];
   paid: boolean;

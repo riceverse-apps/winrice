@@ -18,7 +18,10 @@ File: `catalog/tools/<id>/manifest.yaml`. The JSON Schema is `schemas/tool.schem
 | `uninstall` | no | `method: winget` |
 | `detect.process` | no | process name; used to know if the tool is running and to verify it started |
 | `detect.paths` | yes | files whose existence means "installed"; also used to find the real path of programs |
+| `detect.appx` | no | MSIX/Appx package names; the tool also counts as installed when one is registered for the user |
 | `activate.start` | no | command to start it (the program is resolved through `detect.paths`) |
+| `activate.start_appx` | no | `{ name, app }`: start an MSIX app through its package (`explorer.exe shell:AppsFolder\<family>!<app>`); takes precedence over `start` |
+| `activate.autostart_task` | no | full path of a scheduled task that starts the tool at sign-in by itself (e.g. `\Seelen\Seelen UI Service`). Turning the tool on enables it and turning it off disables it, so the toggle holds after a restart. Windows may ask for administrator permission |
 | `activate.autostart` | no | register it to start with Windows (per-user Run key `WinRice-<id>`) |
 | `activate.profile_snippet` | no | `files` + `content`: a marked block added to the PowerShell profile |
 | `deactivate.stop` | no | command to stop it; if absent the process from `detect.process` is ended |

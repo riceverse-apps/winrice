@@ -192,6 +192,9 @@
               "type": "string"
             }
           }
+        },
+        "autostart_task": {
+          "type": "string"
         }
       }
     },

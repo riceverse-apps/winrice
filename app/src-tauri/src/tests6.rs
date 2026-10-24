@@ -124,8 +124,9 @@ fn an_msix_tool_is_started_through_explorer_and_its_package_id() {
         _ => None,
     });
     assert_eq!(start, Some(("explorer.exe".to_string(), vec![r"shell:AppsFolder\Seelen.SeelenUI_fakepub!App".to_string()])));
-    // autostart uses the same command, so Windows starts it at sign-in the same way
-    assert!(plan.steps.iter().any(|s| matches!(s, Step::SetRunKey { command, .. } if command.contains("shell:AppsFolder"))));
+    // Seelen starts itself at sign-in through its own scheduled task (WinRice switches that task),
+    // so no extra Run-key entry is added
+    assert!(!plan.steps.iter().any(|s| matches!(s, Step::SetRunKey { .. })));
 
     assert!(engine::run(&os, &plan).ok);
     assert!(os.machine().processes.contains("seelen-ui.exe"), "the app really started");

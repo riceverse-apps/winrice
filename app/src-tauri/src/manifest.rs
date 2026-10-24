@@ -136,6 +136,11 @@ pub struct Activate {
     /// Takes precedence over `start`.
     #[serde(default)]
     pub start_appx: Option<AppxStart>,
+    /// A scheduled task that starts the tool at sign-in on its own (full path, e.g. `\Seelen\Seelen UI Service`).
+    /// Turning the tool on enables it, turning it off disables it, so it does not come back after a restart.
+    /// Changing it may need administrator permission, which WinRice asks for.
+    #[serde(default)]
+    pub autostart_task: Option<String>,
     #[serde(default)]
     pub autostart: bool,
     #[serde(default)]

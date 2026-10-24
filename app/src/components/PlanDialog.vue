@@ -18,7 +18,9 @@ watch(
 
 function describe(step: Plan["steps"][number]): string {
   const files = (step.files as string[] | undefined)?.length ?? 0;
-  return t("plan.step." + step.kind, { tool: step.tool ?? "", id: step.id ?? "", name: step.name ?? "", files });
+  // the on/off variants of "scheduled task" read differently
+  const kind = step.kind === "set_task" ? (step.enabled ? "set_task_on" : "set_task_off") : step.kind;
+  return t("plan.step." + kind, { tool: step.tool ?? "", id: step.id ?? "", name: step.name ?? "", files });
 }
 </script>
 

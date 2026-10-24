@@ -27,6 +27,8 @@ pub enum Step {
     SetConfigValue { tool: String, file: String, format: String, key: String, value: serde_json::Value },
     /// Replaces a config file with the content shipped by a theme.
     WriteConfig { tool: String, file: String, content: String },
+    /// Enables or disables the scheduled task that starts a tool at sign-in (may need administrator permission).
+    SetTask { tool: String, name: String, enabled: bool },
     /// Copies the theme wallpaper into WinRice's data folder and makes it the desktop wallpaper.
     SetWallpaper { theme: String, name: String, #[serde(skip)] bytes: Vec<u8> },
 }
@@ -54,6 +56,8 @@ pub enum Undo {
     WingetInstall(String),
     RunKey { name: String, prev: Option<String> },
     Kill(String),
+    /// Put a scheduled task back as it was.
+    Task { name: String, prev: bool },
     /// Stop a process the proper way (the tool's stop command first, then force) and check it is gone.
     StopProcess { stop: Option<Vec<String>>, process: String },
     Spawn(Vec<String>),
@@ -228,6 +232,15 @@ fn apply(os: &dyn Os, step: &Step, undos: &mut Vec<Undo>) -> Result<(), String> 
             undos.push(Undo::WriteFile { path: path.clone(), prev });
             os.write(&path, &next).map_err(|e| format!("{path}: {e}"))
         }
+        Step::SetTask { name, enabled, .. } => {
+            // A task that does not exist (the tool never created it) is simply nothing to change.
+            let Some(prev) = os.task_enabled(name) else { return Ok(()) };
+            if prev != *enabled {
+                os.task_set_enabled(name, *enabled)?;
+                undos.push(Undo::Task { name: name.clone(), prev });
+            }
+            Ok(())
+        }
         Step::WriteConfig { file, content, .. } => {
             let path = os.expand(file);
             backup::backup_file(os, &path)?;
@@ -259,6 +272,7 @@ fn undo(os: &dyn Os, u: &Undo) -> Result<(), String> {
         Undo::RunKey { name, prev: Some(c) } => os.run_key_set(name, c),
         Undo::RunKey { name, prev: None } => os.run_key_del(name),
         Undo::Kill(p) => os.kill_process(p),
+        Undo::Task { name, prev } => os.task_set_enabled(name, *prev),
         Undo::StopProcess { stop, process } => stop_process(os, stop.as_deref(), process),
         Undo::Wallpaper { prev: Some(p) } => os.wallpaper_set(p),
         // There was no wallpaper before: go back to the plain background color.

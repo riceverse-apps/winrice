@@ -141,6 +141,9 @@ fn activate_steps(os: &dyn Os, m: &Manifest) -> Result<Vec<Step>, PlanError> {
     if let Some(s) = &a.profile_snippet {
         steps.push(Step::AddProfileBlock { tool: m.id.clone(), files: s.files.clone(), content: s.content.clone() });
     }
+    if let Some(task) = &a.autostart_task {
+        steps.push(Step::SetTask { tool: m.id.clone(), name: task.clone(), enabled: true });
+    }
     if let Some((program, args)) = start_command(os, m)? {
         if a.autostart {
             let quoted = if program.contains('\\') { format!("\"{program}\"") } else { program.clone() };
@@ -169,6 +172,9 @@ fn deactivate_steps(os: &dyn Os, m: &Manifest) -> Vec<Step> {
             process: m.detect.process.clone(),
             restart,
         });
+    }
+    if let Some(task) = &a.autostart_task {
+        steps.push(Step::SetTask { tool: m.id.clone(), name: task.clone(), enabled: false });
     }
     if d.remove_autostart || a.autostart {
         steps.push(Step::DelRunKey { tool: m.id.clone(), name: autostart_name(m) });

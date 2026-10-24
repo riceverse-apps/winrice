@@ -13,10 +13,11 @@ You will get an answer as soon as a maintainer can look at it. This is a volunte
 - Downloads accepted without checking the SHA-256 listed in `catalog/index.json`, or from hosts other than GitHub.
 - A way to make WinRice change the system without going through the Transaction Engine (no backup / no rollback).
 - Data leaving the computer. WinRice has no telemetry and none must be added.
+- A way to make the elevated administrator helper change anything other than the scheduled tasks named by official tool manifests.
 
 ## Design rules that protect users
 
-- The app runs without administrator rights and asks for elevation only for the steps that need it.
+- The app runs without administrator rights and asks for elevation only for the steps that need it, through the Windows prompt. The elevated copy of the app accepts a single command (change a scheduled task) and only for tasks named in an official tool manifest.
 - Imported themes are shown as *unverified* with the full plan before anything is applied.
 - Files are backed up before being changed; the first original of each file is kept for "Restore original Windows".
 - The only links the app opens belong to this project's repository.

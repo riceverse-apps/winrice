@@ -93,6 +93,7 @@ const undo = computed(() => pick(m.value?.how_to_undo, locale.value));
       <h2 v-if="undo.text">{{ t("tool.undo") }}</h2>
       <p>{{ undo.text }}</p>
       <p v-if="m.requires.admin" class="muted">{{ t("tool.adminHint") }}</p>
+      <p v-if="m.activate?.autostart_task" class="muted">{{ t("tool.elevationHint") }}</p>
     </section>
 
     <section v-else-if="tab === 'settings'" class="card">

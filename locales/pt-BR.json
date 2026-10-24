@@ -103,7 +103,8 @@
     "restrictedHint": "Uso gratuito, mas a licença restringe alguns usos (como uso comercial). Leia antes de usar no trabalho.",
     "incompatibleHint": "Esta ferramenta não suporta a sua versão do Windows (build {build}), então não pode ser instalada nem ligada.",
     "settingsHint": "Opções simples. O WinRice faz backup do arquivo de configuração antes de mudar. Comentários dentro de arquivos YAML não são mantidos.",
-    "onlyFavorites": "Só favoritas"
+    "onlyFavorites": "Só favoritas",
+    "elevationHint": "Ligar ou desligar também muda a tarefa que o Windows usa para iniciá-la no login. O Windows pode pedir permissão de administrador para isso; se você negar, nada é alterado."
   },
   "plan": {
     "intro": "Isto é o que o WinRice vai fazer. Se algum passo falhar, tudo o que já foi feito é desfeito automaticamente.",
@@ -129,7 +130,9 @@
       "start": "Iniciar {tool}",
       "stop": "Parar {tool}",
       "restore_originals": "Devolver a versão original de cada arquivo de configuração que o WinRice alterou",
-      "set_config_value": "Mudar uma opção no arquivo de configuração de {tool}"
+      "set_config_value": "Mudar uma opção no arquivo de configuração de {tool}",
+      "set_task_on": "Ligar a tarefa de login de {tool} (pode pedir permissão de administrador)",
+      "set_task_off": "Desligar a tarefa de login de {tool}, para que ela não volte depois de reiniciar (pode pedir permissão de administrador)"
     },
     "tryButton": "Testar por 30 segundos"
   },
@@ -189,7 +192,12 @@
     "url_not_allowed": "Esse link não pode ser aberto por aqui.",
     "cover_not_found": "Não foi possível ler esse arquivo.",
     "cover_too_large": "A imagem tem mais de 2 MB.",
-    "invalid_theme_name": "Dê um nome ao tema."
+    "invalid_theme_name": "Dê um nome ao tema.",
+    "elevation_denied": "A permissão de administrador não foi dada, então nada foi alterado.",
+    "elevation_failed": "Não foi possível pedir a permissão de administrador ao Windows.",
+    "elevation_timeout": "O passo de administrador demorou demais e foi cancelado.",
+    "elevated_helper_failed": "O passo de administrador falhou (código {ids}).",
+    "task_not_found": "A tarefa agendada não existe."
   },
   "history": {
     "empty": "Nada foi feito ainda.",

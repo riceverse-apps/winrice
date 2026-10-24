@@ -1,5 +1,6 @@
 mod actions;
 mod backup;
+mod elevated;
 mod engine;
 mod hardware;
 mod manifest;
@@ -18,6 +19,8 @@ mod tests4;
 mod tests5;
 #[cfg(test)]
 mod tests6;
+#[cfg(test)]
+mod tests7;
 mod theme;
 mod themeops;
 mod widget;
@@ -851,6 +854,10 @@ fn get_glossary() -> Vec<manifest::GlossaryTerm> {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // The same program doubles as the administrator helper: `winrice.exe --elevated <command>`.
+    if let Some(code) = elevated::run_if_requested() {
+        std::process::exit(code);
+    }
     use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
 
     let os = RealOs;

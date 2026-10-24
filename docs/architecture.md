@@ -14,6 +14,7 @@ UI (Vue)  ──Tauri commands──▶  Core (Rust)
                                ├─ settings.rs     simple options written into YAML/JSON configs
                                ├─ trial.rs        try mode, Explorer watchdog, the "last operation" slot
                                ├─ net.rs          GitHub import, remote catalog sync (SHA-256), allowed links
+                               ├─ elevated.rs     administrator helper (UAC) for the few things that need it
                                ├─ hardware.rs     HardwareMonitor (no admin needed)
                                ├─ widget.rs       tray flyout, floating widget, widget settings
                                ├─ store.rs        SQLite: history (with undo journals), profiles, state
@@ -35,6 +36,10 @@ All access to files, processes, the registry, winget and the wallpaper goes thro
 > run a plan once to count its changes; then for every N, make the N-th change fail and assert that the machine equals the initial state.
 
 This is how rollback is proven for install, activate, deactivate, themes, profiles, pause/resume, palette sync and settings.
+
+## Administrator helper
+
+WinRice always runs without administrator rights. For the rare change that Windows refuses to a normal user (today: enabling/disabling a scheduled task that a tool registered with the highest privileges), `os::task_set_enabled` first tries normally and, if refused, starts the same `winrice.exe` again through the Windows administrator prompt (`ShellExecuteEx` with `runas`) as `winrice.exe --elevated task-set <task> <0|1>`. The elevated copy understands only that command and only for tasks named by an official tool manifest (`activate.autostart_task`); everything else exits with an error code without touching Windows. Saying "No" to the prompt fails the step, and the engine rolls the whole operation back.
 
 ## Safety rules enforced in code
 

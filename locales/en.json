@@ -103,7 +103,8 @@
     "restrictedHint": "Free to use, but the license restricts some uses (such as commercial use). Read it before using at work.",
     "incompatibleHint": "This tool does not support your Windows version (build {build}), so it cannot be installed or turned on.",
     "settingsHint": "Simple options. WinRice backs up the config file before changing it. Comments inside YAML files are not kept.",
-    "onlyFavorites": "Favorites only"
+    "onlyFavorites": "Favorites only",
+    "elevationHint": "Turning it on or off also changes the task Windows uses to start it at sign-in. Windows may ask for administrator permission for that; if you say no, nothing is changed."
   },
   "plan": {
     "intro": "This is what WinRice is going to do. If any step fails, everything already done is undone automatically.",
@@ -129,7 +130,9 @@
       "start": "Start {tool}",
       "stop": "Stop {tool}",
       "restore_originals": "Put back the original version of every config file WinRice changed",
-      "set_config_value": "Change one option in the config file of {tool}"
+      "set_config_value": "Change one option in the config file of {tool}",
+      "set_task_on": "Turn on the sign-in task of {tool} (may ask for administrator permission)",
+      "set_task_off": "Turn off the sign-in task of {tool} so it does not come back after a restart (may ask for administrator permission)"
     },
     "tryButton": "Try for 30 seconds"
   },
@@ -189,7 +192,12 @@
     "url_not_allowed": "That link cannot be opened from here.",
     "cover_not_found": "Could not read that file.",
     "cover_too_large": "The screenshot is bigger than 2 MB.",
-    "invalid_theme_name": "Give the theme a name."
+    "invalid_theme_name": "Give the theme a name.",
+    "elevation_denied": "Administrator permission was not given, so nothing was changed.",
+    "elevation_failed": "Could not ask Windows for administrator permission.",
+    "elevation_timeout": "The administrator step took too long and was cancelled.",
+    "elevated_helper_failed": "The administrator step failed (code {ids}).",
+    "task_not_found": "The scheduled task does not exist."
   },
   "history": {
     "empty": "Nothing has been done yet.",

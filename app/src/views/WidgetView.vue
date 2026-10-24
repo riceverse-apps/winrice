@@ -93,7 +93,7 @@ const shown = computed(() => {
   }
   return usable.filter((x) => x.manifest.widget?.show_by_default !== false);
 });
-const needsCare = (x: ToolView) => x.manifest.requires.admin || ["taskbar-start", "shell-mod"].includes(x.manifest.category);
+const needsCare = (x: ToolView) => x.manifest.requires.admin || !!x.manifest.activate?.autostart_task || ["taskbar-start", "shell-mod"].includes(x.manifest.category);
 const clashing = (x: ToolView) =>
   tools.value.filter((o) => o.active && o.manifest.id !== x.manifest.id && (x.manifest.conflicts.includes(o.manifest.id) || o.manifest.conflicts.includes(x.manifest.id)));
 

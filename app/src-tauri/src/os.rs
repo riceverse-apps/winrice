@@ -26,6 +26,11 @@ pub trait Os: Send + Sync {
     fn process_ids(&self, name: &str) -> Vec<u32>;
     /// Is an MSIX/Appx package with this name (e.g. `Seelen.SeelenUI`) installed for the current user?
     fn appx_installed(&self, name: &str) -> bool;
+    /// Is the scheduled task enabled? `None` when it does not exist.
+    fn task_enabled(&self, name: &str) -> Option<bool>;
+    /// Enables/disables a scheduled task. Tries as the current user first and, if Windows refuses,
+    /// asks for administrator permission (UAC) through the elevated helper.
+    fn task_set_enabled(&self, name: &str, enabled: bool) -> Result<(), String>;
     /// Package family name (`Name_publisherid`) of an installed MSIX package.
     fn appx_family(&self, name: &str) -> Option<String>;
     fn windows_build(&self) -> u32;
@@ -225,6 +230,23 @@ mod real {
             if code == 0 { Ok(()) } else { Err(format!("reg delete failed ({code})")) }
         }
 
+        fn task_enabled(&self, name: &str) -> Option<bool> {
+            let out = hidden("schtasks", &["/Query".into(), "/TN".into(), name.into(), "/XML".into()]).output().ok()?;
+            if !out.status.success() {
+                return None; // no such task
+            }
+            // <Enabled> is only written when it is false; the default is enabled.
+            Some(!String::from_utf8_lossy(&out.stdout).contains("<Enabled>false</Enabled>"))
+        }
+
+        fn task_set_enabled(&self, name: &str, enabled: bool) -> Result<(), String> {
+            if crate::elevated::change_task(name, enabled) {
+                return Ok(());
+            }
+            // Windows refused (the task needs administrator rights): ask for them.
+            crate::elevated::run_elevated(&["task-set", name, if enabled { "1" } else { "0" }])
+        }
+
         fn appx_family(&self, name: &str) -> Option<String> {
             let key = r"HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages";
             let out = hidden("reg", &["query".into(), key.into(), "/f".into(), format!("{name}_"), "/k".into()]).output().ok()?;
@@ -291,6 +313,8 @@ pub mod fake {
         pub winget: BTreeSet<String>,
         pub wallpaper: Option<String>,
         pub appx: BTreeSet<String>,
+        /// scheduled task full name -> enabled
+        pub tasks: BTreeMap<String, bool>,
     }
 
     pub struct FakeOs {
@@ -308,13 +332,15 @@ pub mod fake {
         pub appx_packages: Mutex<BTreeMap<String, String>>,
         /// Processes that survive `kill_process` (a service restarts them, or the kill is refused).
         pub unkillable: Mutex<BTreeSet<String>>,
+        /// The user answers "No" to the administrator prompt.
+        pub uac_denied: Mutex<bool>,
         /// When true, spawned programs never show up as running processes.
         pub spawn_is_dud: Mutex<bool>,
     }
 
     impl FakeOs {
         pub fn new(world: World) -> Self {
-            Self { world: Mutex::new(world), ticks: Mutex::new(0), fail_at: Mutex::new(None), spawn_is_dud: Mutex::new(false), build: Mutex::new(26100), packages: Mutex::new(BTreeMap::new()), appx_launch: Mutex::new(BTreeMap::new()), appx_packages: Mutex::new(BTreeMap::new()), unkillable: Mutex::new(BTreeSet::new()), pids: Mutex::new(vec![]) }
+            Self { world: Mutex::new(world), ticks: Mutex::new(0), fail_at: Mutex::new(None), spawn_is_dud: Mutex::new(false), build: Mutex::new(26100), packages: Mutex::new(BTreeMap::new()), appx_launch: Mutex::new(BTreeMap::new()), uac_denied: Mutex::new(false), appx_packages: Mutex::new(BTreeMap::new()), unkillable: Mutex::new(BTreeSet::new()), pids: Mutex::new(vec![]) }
         }
         /// Counts a mutating call; fails exactly once when it reaches `fail_at`.
         fn tick(&self) -> Result<(), String> {
@@ -469,6 +495,22 @@ pub mod fake {
         }
         fn appx_installed(&self, name: &str) -> bool {
             self.world.lock().unwrap().appx.contains(name)
+        }
+        fn task_enabled(&self, name: &str) -> Option<bool> {
+            self.world.lock().unwrap().tasks.get(name).copied()
+        }
+        fn task_set_enabled(&self, name: &str, enabled: bool) -> Result<(), String> {
+            self.tick()?;
+            if *self.uac_denied.lock().unwrap() {
+                return Err("elevation_denied".into());
+            }
+            match self.world.lock().unwrap().tasks.get_mut(name) {
+                Some(t) => {
+                    *t = enabled;
+                    Ok(())
+                }
+                None => Err("task_not_found".into()),
+            }
         }
         fn appx_family(&self, name: &str) -> Option<String> {
             self.appx_installed(name).then(|| format!("{name}_fakepub"))

@@ -9,7 +9,9 @@
 #>
 param(
   [string]$Exe,
-  [switch]$Launch
+  [switch]$Launch,
+  # Unattended: the Sandbox verifies every tool and collects the results by itself.
+  [switch]$Auto
 )
 $ErrorActionPreference = "Stop"
 $repo = Split-Path -Parent $PSScriptRoot
@@ -30,7 +32,7 @@ if (-not (Get-Command WindowsSandbox.exe -ErrorAction SilentlyContinue)) {
 New-Item -ItemType Directory -Force $stage | Out-Null
 New-Item -ItemType Directory -Force (Join-Path $stage "app") | Out-Null
 Copy-Item $Exe (Join-Path $stage "app\winrice.exe") -Force
-foreach ($f in "bootstrap.ps1", "verify-tools.ps1", "collect.ps1") { Copy-Item (Join-Path $PSScriptRoot $f) $stage -Force }
+foreach ($f in "bootstrap.ps1", "verify-tools.ps1", "collect.ps1", "auto.ps1") { Copy-Item (Join-Path $PSScriptRoot $f) $stage -Force }
 
 # the in-sandbox shortcuts (.cmd avoids execution-policy prompts)
 Set-Content (Join-Path $stage "1-VERIFY-TOOLS.cmd") "@echo off`r`npowershell -NoProfile -ExecutionPolicy Bypass -File C:\WinRiceTest\verify-tools.ps1`r`npause" -Encoding ASCII
@@ -40,6 +42,9 @@ Set-Content (Join-Path $stage "3-COLLECT-RESULTS.cmd") "@echo off`r`npowershell 
 Push-Location $repo
 try { node sandbox\export-tools.mjs (Join-Path $stage "tools.json") } finally { Pop-Location }
 
+$entry = if ($Auto) { "auto.ps1" } else { "bootstrap.ps1" }
+# results of an older run would be mistaken for new ones
+if ($Auto) { Remove-Item (Join-Path $stage "results"), (Join-Path $stage "report") -Recurse -Force -ErrorAction SilentlyContinue }
 $wsb = @"
 <Configuration>
   <VGpu>Enable</VGpu>
@@ -52,7 +57,7 @@ $wsb = @"
     </MappedFolder>
   </MappedFolders>
   <LogonCommand>
-    <Command>powershell -NoProfile -ExecutionPolicy Bypass -File C:\WinRiceTest\bootstrap.ps1</Command>
+    <Command>powershell -NoProfile -ExecutionPolicy Bypass -File C:\WinRiceTest\$entry</Command>
   </LogonCommand>
 </Configuration>
 "@

@@ -28,7 +28,10 @@ activate:
   # MSIX app: it has no program on PATH, so it is started through its package.
   # Application id "App" read from the installed package manifest (AppxManifest.xml).
   start_appx: { name: Seelen.SeelenUI, app: App }
-  autostart: true
+  # Seelen starts itself at every sign-in through this scheduled task (it runs with the highest privileges, so
+  # changing it asks for administrator permission). WinRice owns that switch so the toggle also holds after a restart.
+  autostart_task: '\Seelen\Seelen UI Service'
+  autostart: false
 deactivate:
   # Killing seelen-ui.exe is not enough: slu-service.exe (started by a scheduled task) reopens it
   # within seconds. Stopping the service first lets the UI close for good.
