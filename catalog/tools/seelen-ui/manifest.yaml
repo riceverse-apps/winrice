@@ -25,7 +25,9 @@ detect:
     - '%ProgramFiles%\Seelen UI\seelen-ui.exe'
     - '%LOCALAPPDATA%\Programs\Seelen UI\seelen-ui.exe'
 activate:
-  start: "seelen-ui.exe"
+  # MSIX app: it has no program on PATH, so it is started through its package.
+  # Application id "App" read from the installed package manifest (AppxManifest.xml).
+  start_appx: { name: Seelen.SeelenUI, app: App }
   autostart: true
 deactivate:
   remove_autostart: true

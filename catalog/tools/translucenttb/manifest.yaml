@@ -24,7 +24,9 @@ detect:
   paths:
     - '%LOCALAPPDATA%\Microsoft\WindowsApps\TranslucentTB.exe'
 activate:
-  start: "TranslucentTB.exe"
+  # MSIX app: it has no program on PATH, so it is started through its package.
+  # UNVERIFIED: the application id "App" is a guess; read it from the installed package manifest.
+  start_appx: { name: CharlesMilette.TranslucentTB, app: App }
   autostart: false
 deactivate:
   remove_autostart: false

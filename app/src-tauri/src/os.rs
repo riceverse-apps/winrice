@@ -26,6 +26,8 @@ pub trait Os: Send + Sync {
     fn process_ids(&self, name: &str) -> Vec<u32>;
     /// Is an MSIX/Appx package with this name (e.g. `Seelen.SeelenUI`) installed for the current user?
     fn appx_installed(&self, name: &str) -> bool;
+    /// Package family name (`Name_publisherid`) of an installed MSIX package.
+    fn appx_family(&self, name: &str) -> Option<String>;
     fn windows_build(&self) -> u32;
     fn windows_edition(&self) -> String;
     fn data_dir(&self) -> String;
@@ -223,6 +225,19 @@ mod real {
             if code == 0 { Ok(()) } else { Err(format!("reg delete failed ({code})")) }
         }
 
+        fn appx_family(&self, name: &str) -> Option<String> {
+            let key = r"HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages";
+            let out = hidden("reg", &["query".into(), key.into(), "/f".into(), format!("{name}_"), "/k".into()]).output().ok()?;
+            let text = String::from_utf8_lossy(&out.stdout).into_owned();
+            let prefix = format!("\\Packages\\{name}_").to_lowercase();
+            // ...\Packages\Seelen.SeelenUI_2.8.8.0_x64__p6yyn03m1894e  ->  Seelen.SeelenUI_p6yyn03m1894e
+            text.lines().find(|l| l.to_lowercase().contains(&prefix)).and_then(|l| {
+                let full = l.trim().rsplit('\\').next()?;
+                let publisher = full.rsplit_once("__")?.1;
+                Some(format!("{name}_{publisher}"))
+            })
+        }
+
         fn appx_installed(&self, name: &str) -> bool {
             // MSIX packages are registered per user here; reading it is fast and needs no admin.
             let key = r"HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages";
@@ -287,13 +302,17 @@ pub mod fake {
         pub packages: Mutex<BTreeMap<String, Vec<String>>>,
         /// Process ids returned for every process name (Explorer watchdog tests).
         pub pids: Mutex<Vec<u32>>,
+        /// package family -> process that `explorer.exe shell:AppsFolder\<family>!App` starts.
+        pub appx_launch: Mutex<BTreeMap<String, String>>,
+        /// winget id -> MSIX package name registered when it is installed (and removed when uninstalled).
+        pub appx_packages: Mutex<BTreeMap<String, String>>,
         /// When true, spawned programs never show up as running processes.
         pub spawn_is_dud: Mutex<bool>,
     }
 
     impl FakeOs {
         pub fn new(world: World) -> Self {
-            Self { world: Mutex::new(world), ticks: Mutex::new(0), fail_at: Mutex::new(None), spawn_is_dud: Mutex::new(false), build: Mutex::new(26100), packages: Mutex::new(BTreeMap::new()), pids: Mutex::new(vec![]) }
+            Self { world: Mutex::new(world), ticks: Mutex::new(0), fail_at: Mutex::new(None), spawn_is_dud: Mutex::new(false), build: Mutex::new(26100), packages: Mutex::new(BTreeMap::new()), appx_launch: Mutex::new(BTreeMap::new()), appx_packages: Mutex::new(BTreeMap::new()), pids: Mutex::new(vec![]) }
         }
         /// Counts a mutating call; fails exactly once when it reaches `fail_at`.
         fn tick(&self) -> Result<(), String> {
@@ -367,6 +386,7 @@ pub mod fake {
             let mut w = self.world.lock().unwrap();
             if let Some(id) = args.iter().position(|a| a == "--id").and_then(|i| args.get(i + 1)) {
                 let files = self.packages.lock().unwrap().get(id).cloned().unwrap_or_default();
+                let appx = self.appx_packages.lock().unwrap().get(id).cloned();
                 if args[0] == "install" && w.winget.contains(id) {
                     return Ok(-1978335189); // 0x8A15002B: already installed, no update
                 }
@@ -375,11 +395,17 @@ pub mod fake {
                         for f in files {
                             w.files.insert(f, String::new());
                         }
+                        if let Some(a) = appx {
+                            w.appx.insert(a);
+                        }
                         w.winget.insert(id.clone())
                     }
                     _ => {
                         for f in files {
                             w.files.remove(&f);
+                        }
+                        if let Some(a) = appx {
+                            w.appx.remove(&a);
                         }
                         w.winget.remove(id)
                     }
@@ -396,6 +422,12 @@ pub mod fake {
         fn spawn(&self, program: &str, _args: &[String]) -> Result<(), String> {
             self.tick()?;
             if !*self.spawn_is_dud.lock().unwrap() {
+                if let Some(family) = _args.first().and_then(|a| a.strip_prefix("shell:AppsFolder\\")).and_then(|a| a.split('!').next()) {
+                    if let Some(proc_name) = self.appx_launch.lock().unwrap().get(family).cloned() {
+                        self.world.lock().unwrap().processes.insert(proc_name);
+                    }
+                    return Ok(());
+                }
                 let name = program.rsplit('\\').next().unwrap_or(program).to_string();
                 let mut w = self.world.lock().unwrap();
                 if name == "komorebic.exe" {
@@ -430,6 +462,9 @@ pub mod fake {
         }
         fn appx_installed(&self, name: &str) -> bool {
             self.world.lock().unwrap().appx.contains(name)
+        }
+        fn appx_family(&self, name: &str) -> Option<String> {
+            self.appx_installed(name).then(|| format!("{name}_fakepub"))
         }
         fn process_ids(&self, _name: &str) -> Vec<u32> {
             self.pids.lock().unwrap().clone()

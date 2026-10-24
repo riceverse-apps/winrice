@@ -21,6 +21,13 @@ fn machine(initial: World) -> FakeOs {
         if let (Some(id), Some(first)) = (&m.install.id, m.detect.paths.first()) {
             os.packages.lock().unwrap().insert(id.clone(), vec![first.clone()]);
         }
+        // MSIX tools are also registered as packages, and started through their package id
+        if let (Some(id), Some(pkg)) = (&m.install.id, m.detect.appx.first()) {
+            os.appx_packages.lock().unwrap().insert(id.clone(), pkg.clone());
+            if let Some(p) = &m.detect.process {
+                os.appx_launch.lock().unwrap().insert(format!("{pkg}_fakepub"), p.clone());
+            }
+        }
     }
     os
 }

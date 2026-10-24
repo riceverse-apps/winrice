@@ -122,8 +122,18 @@ fn winget_id(m: &Manifest) -> Result<String, PlanError> {
     }
 }
 
-fn activate_steps(os: &dyn Os, m: &Manifest) -> Vec<Step> {
-    let Some(a) = &m.activate else { return vec![] };
+/// How to start a tool: an MSIX app through its package, or a program from `detect.paths`/PATH.
+fn start_command(os: &dyn Os, m: &Manifest) -> Result<Option<(String, Vec<String>)>, PlanError> {
+    let Some(a) = &m.activate else { return Ok(None) };
+    if let Some(ax) = &a.start_appx {
+        let family = os.appx_family(&ax.name).ok_or(PlanError::NotInstalled)?;
+        return Ok(Some(("explorer.exe".into(), vec![format!("shell:AppsFolder\\{family}!{}", ax.app)])));
+    }
+    Ok(a.start.as_ref().map(|c| resolve(os, m, c)))
+}
+
+fn activate_steps(os: &dyn Os, m: &Manifest) -> Result<Vec<Step>, PlanError> {
+    let Some(a) = &m.activate else { return Ok(vec![]) };
     let mut steps = vec![];
     if let Some(c) = m.config.as_ref().filter(|c| c.backup && !c.paths.is_empty()) {
         steps.push(Step::BackupFiles { tool: m.id.clone(), files: c.paths.clone() });
@@ -131,8 +141,7 @@ fn activate_steps(os: &dyn Os, m: &Manifest) -> Vec<Step> {
     if let Some(s) = &a.profile_snippet {
         steps.push(Step::AddProfileBlock { tool: m.id.clone(), files: s.files.clone(), content: s.content.clone() });
     }
-    if let Some(cmd) = &a.start {
-        let (program, args) = resolve(os, m, cmd);
+    if let Some((program, args)) = start_command(os, m)? {
         if a.autostart {
             let quoted = if program.contains('\\') { format!("\"{program}\"") } else { program.clone() };
             let command = std::iter::once(quoted).chain(args.iter().cloned()).collect::<Vec<_>>().join(" ");
@@ -140,7 +149,7 @@ fn activate_steps(os: &dyn Os, m: &Manifest) -> Vec<Step> {
         }
         steps.push(Step::Start { tool: m.id.clone(), program, args, process: m.detect.process.clone() });
     }
-    steps
+    Ok(steps)
 }
 
 fn deactivate_steps(os: &dyn Os, m: &Manifest) -> Vec<Step> {
@@ -148,10 +157,7 @@ fn deactivate_steps(os: &dyn Os, m: &Manifest) -> Vec<Step> {
     let mut steps = vec![];
     let stop = d.stop.as_ref().map(|c| resolve(os, m, c));
     if stop.is_some() || m.detect.process.is_some() {
-        let restart = a.start.as_ref().map(|c| {
-            let (p, args) = resolve(os, m, c);
-            std::iter::once(p).chain(args).collect::<Vec<_>>()
-        });
+        let restart = start_command(os, m).ok().flatten().map(|(p, args)| std::iter::once(p).chain(args).collect::<Vec<_>>());
         steps.push(Step::Stop {
             tool: m.id.clone(),
             program: stop.as_ref().map(|s| s.0.clone()),
@@ -215,7 +221,7 @@ pub fn plan(os: &dyn Os, all: &[Manifest], m: &Manifest, action: Action, resolve
                     steps.extend(deactivate_steps(os, o));
                 }
             }
-            steps.extend(activate_steps(os, m));
+            steps.extend(activate_steps(os, m)?);
             steps
         }
         Action::Deactivate => {

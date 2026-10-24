@@ -132,10 +132,22 @@ pub struct ProfileSnippet {
 pub struct Activate {
     #[serde(default)]
     pub start: Option<String>,
+    /// For MSIX tools: start the app by its package (`explorer.exe shell:AppsFolder\<family>!<app>`).
+    /// Takes precedence over `start`.
+    #[serde(default)]
+    pub start_appx: Option<AppxStart>,
     #[serde(default)]
     pub autostart: bool,
     #[serde(default)]
     pub profile_snippet: Option<ProfileSnippet>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AppxStart {
+    /// Package name, as in `detect.appx`.
+    pub name: String,
+    /// Application id inside the package manifest (usually `App`).
+    pub app: String,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]

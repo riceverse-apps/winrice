@@ -98,3 +98,73 @@ fn real_appx_lookup_does_not_invent_packages() {
     let os = crate::os::RealOs;
     assert!(!os.appx_installed("Definitely.Not.A.Package.123"));
 }
+
+// ---- MSIX apps are started through their package
+
+fn seelen_world() -> World {
+    let mut w = World::default();
+    w.appx.insert("Seelen.SeelenUI".into());
+    w
+}
+
+fn seelen_os(world: World) -> FakeOs {
+    let os = FakeOs::new(world);
+    os.appx_launch.lock().unwrap().insert("Seelen.SeelenUI_fakepub".into(), "seelen-ui.exe".into());
+    os
+}
+
+#[test]
+fn an_msix_tool_is_started_through_explorer_and_its_package_id() {
+    let all = manifest::all();
+    let seelen = tool("seelen-ui");
+    let os = seelen_os(seelen_world());
+    let plan = actions::plan(&os, &all, &seelen, Action::Activate, false).unwrap();
+    let start = plan.steps.iter().find_map(|s| match s {
+        Step::Start { program, args, .. } => Some((program.clone(), args.clone())),
+        _ => None,
+    });
+    assert_eq!(start, Some(("explorer.exe".to_string(), vec![r"shell:AppsFolder\Seelen.SeelenUI_fakepub!App".to_string()])));
+    // autostart uses the same command, so Windows starts it at sign-in the same way
+    assert!(plan.steps.iter().any(|s| matches!(s, Step::SetRunKey { command, .. } if command.contains("shell:AppsFolder"))));
+
+    assert!(engine::run(&os, &plan).ok);
+    assert!(os.machine().processes.contains("seelen-ui.exe"), "the app really started");
+}
+
+#[test]
+fn msix_activation_and_deactivation_roll_back_from_any_step() {
+    let all = manifest::all();
+    let seelen = tool("seelen-ui");
+    // activate
+    let probe = seelen_os(seelen_world());
+    let plan = actions::plan(&probe, &all, &seelen, Action::Activate, false).unwrap();
+    assert!(engine::run(&probe, &plan).ok);
+    let on = probe.machine();
+    for n in 0..probe.ticks() {
+        let os = seelen_os(seelen_world());
+        *os.fail_at.lock().unwrap() = Some(n);
+        let out = engine::run(&os, &plan);
+        assert!(!out.ok && out.rolled_back, "activate op {n}");
+        assert_eq!(os.machine(), seelen_world(), "activate op {n}");
+    }
+    // deactivate (and the restart used to undo it goes through the package too)
+    let off_plan = actions::plan(&probe, &all, &seelen, Action::Deactivate, false).unwrap();
+    for n in 0..4 {
+        let os = seelen_os(seelen_world());
+        os.world.lock().unwrap().processes.insert("seelen-ui.exe".into());
+        os.world.lock().unwrap().run_keys = on.run_keys.clone();
+        let before = os.machine();
+        *os.fail_at.lock().unwrap() = Some(n);
+        let out = engine::run(&os, &off_plan);
+        if !out.ok {
+            assert_eq!(os.machine(), before, "deactivate op {n}");
+        }
+    }
+}
+
+#[test]
+fn an_uninstalled_msix_tool_cannot_be_activated() {
+    let os = seelen_os(World::default());
+    // not installed: planning must say so instead of inventing a program that is not found
+    assert_eq!(actions::plan(&os, &manifest::all(), &tool("seelen-ui"), Action::Activate, false).unwrap_err(), PlanError::NotInstalled);
+}

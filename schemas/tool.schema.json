@@ -177,6 +177,21 @@
               "type": "string"
             }
           }
+        },
+        "start_appx": {
+          "type": "object",
+          "required": [
+            "name",
+            "app"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "app": {
+              "type": "string"
+            }
+          }
         }
       }
     },
