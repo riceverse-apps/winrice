@@ -168,3 +168,66 @@ fn an_uninstalled_msix_tool_cannot_be_activated() {
     // not installed: planning must say so instead of inventing a program that is not found
     assert_eq!(actions::plan(&os, &manifest::all(), &tool("seelen-ui"), Action::Activate, false).unwrap_err(), PlanError::NotInstalled);
 }
+
+// ---- stopping a tool for real (a helper service may restart it)
+
+fn seelen_running() -> FakeOs {
+    let mut w = seelen_world();
+    w.processes.insert("seelen-ui.exe".into());
+    w.processes.insert("slu-service.exe".into());
+    w.run_keys.insert("WinRice-seelen-ui".into(), r"explorer.exe shell:AppsFolder\Seelen.SeelenUI_fakepub!App".into());
+    let os = seelen_os(w);
+    // the service reopens the UI whenever it is killed, until the service itself is stopped
+    os.unkillable.lock().unwrap().insert("seelen-ui.exe".into());
+    os
+}
+
+#[test]
+fn a_tool_kept_alive_by_a_service_is_stopped_through_that_service() {
+    let all = manifest::all();
+    let os = seelen_running();
+    let plan = actions::plan(&os, &all, &tool("seelen-ui"), Action::Deactivate, false).unwrap();
+    let stop = plan.steps.iter().find_map(|s| match s {
+        Step::Stop { program, args, .. } => Some((program.clone(), args.clone())),
+        _ => None,
+    });
+    let (prog, args) = stop.expect("a stop step");
+    let prog = prog.expect("the stop command");
+    assert!(prog.ends_with("slu-service.exe") && args == vec!["stop".to_string()], "{prog} {args:?}");
+
+    let out = engine::run(&os, &plan);
+    assert!(out.ok, "{:?}", out.error);
+    assert!(!os.machine().processes.contains("seelen-ui.exe"), "it is really gone, not respawned");
+    assert!(!os.machine().run_keys.contains_key("WinRice-seelen-ui"));
+}
+
+#[test]
+fn undoing_an_activation_also_goes_through_the_stop_command() {
+    let all = manifest::all();
+    let os = seelen_os(seelen_world());
+    let plan = actions::plan(&os, &all, &tool("seelen-ui"), Action::Activate, false).unwrap();
+    let (out, journal) = engine::run_journal(&os, &plan);
+    assert!(out.ok);
+    os.unkillable.lock().unwrap().insert("seelen-ui.exe".into()); // the service would bring it back
+    let errors = engine::revert(&os, &journal);
+    assert!(errors.is_empty(), "{errors:?}");
+    assert_eq!(os.machine(), seelen_world(), "try mode / undo really turns it off");
+}
+
+#[test]
+fn a_process_that_will_not_stop_is_reported_instead_of_pretending_it_worked() {
+    let all = manifest::all();
+    let zebar = tool("zebar"); // no stop command: it can only be killed
+    let mut w = World::default();
+    w.files.insert(r"%ProgramFiles%\glzr.io\Zebar\zebar.exe".into(), String::new());
+    w.processes.insert("zebar.exe".into());
+    w.run_keys.insert("WinRice-zebar".into(), "x".into());
+    let os = FakeOs::new(w.clone());
+    os.unkillable.lock().unwrap().insert("zebar.exe".into());
+
+    let plan = actions::plan(&os, &all, &zebar, Action::Deactivate, false).unwrap();
+    let out = engine::run(&os, &plan);
+    assert!(!out.ok && out.rolled_back, "must not claim success");
+    assert_eq!(out.error.as_deref(), Some("zebar.exe did not stop"));
+    assert_eq!(os.machine(), w, "autostart entry and everything else restored");
+}

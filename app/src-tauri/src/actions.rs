@@ -147,7 +147,11 @@ fn activate_steps(os: &dyn Os, m: &Manifest) -> Result<Vec<Step>, PlanError> {
             let command = std::iter::once(quoted).chain(args.iter().cloned()).collect::<Vec<_>>().join(" ");
             steps.push(Step::SetRunKey { tool: m.id.clone(), name: autostart_name(m), command });
         }
-        steps.push(Step::Start { tool: m.id.clone(), program, args, process: m.detect.process.clone() });
+        let stop = m.deactivate.as_ref().and_then(|d| d.stop.as_ref()).map(|c| {
+            let (p, a) = resolve(os, m, c);
+            std::iter::once(p).chain(a).collect::<Vec<_>>()
+        });
+        steps.push(Step::Start { tool: m.id.clone(), program, args, process: m.detect.process.clone(), stop });
     }
     Ok(steps)
 }

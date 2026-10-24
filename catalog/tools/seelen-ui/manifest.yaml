@@ -20,16 +20,19 @@ detect:
   process: seelen-ui.exe
   # MSIX package: found through the package registration, not through a file path.
   appx: [Seelen.SeelenUI]
-  # UNVERIFIED: install paths must be confirmed in a clean VM before release.
+  # Execution aliases of the package; slu-service is what keeps the UI alive (see deactivate).
   paths:
-    - '%ProgramFiles%\Seelen UI\seelen-ui.exe'
-    - '%LOCALAPPDATA%\Programs\Seelen UI\seelen-ui.exe'
+    - '%LOCALAPPDATA%\Microsoft\WindowsApps\slu-service.exe'
+    - '%LOCALAPPDATA%\Microsoft\WindowsApps\slu.exe'
 activate:
   # MSIX app: it has no program on PATH, so it is started through its package.
   # Application id "App" read from the installed package manifest (AppxManifest.xml).
   start_appx: { name: Seelen.SeelenUI, app: App }
   autostart: true
 deactivate:
+  # Killing seelen-ui.exe is not enough: slu-service.exe (started by a scheduled task) reopens it
+  # within seconds. Stopping the service first lets the UI close for good.
+  stop: "slu-service.exe stop"
   remove_autostart: true
 conflicts: []
 pairs_well_with: []

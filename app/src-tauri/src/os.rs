@@ -306,13 +306,15 @@ pub mod fake {
         pub appx_launch: Mutex<BTreeMap<String, String>>,
         /// winget id -> MSIX package name registered when it is installed (and removed when uninstalled).
         pub appx_packages: Mutex<BTreeMap<String, String>>,
+        /// Processes that survive `kill_process` (a service restarts them, or the kill is refused).
+        pub unkillable: Mutex<BTreeSet<String>>,
         /// When true, spawned programs never show up as running processes.
         pub spawn_is_dud: Mutex<bool>,
     }
 
     impl FakeOs {
         pub fn new(world: World) -> Self {
-            Self { world: Mutex::new(world), ticks: Mutex::new(0), fail_at: Mutex::new(None), spawn_is_dud: Mutex::new(false), build: Mutex::new(26100), packages: Mutex::new(BTreeMap::new()), appx_launch: Mutex::new(BTreeMap::new()), appx_packages: Mutex::new(BTreeMap::new()), pids: Mutex::new(vec![]) }
+            Self { world: Mutex::new(world), ticks: Mutex::new(0), fail_at: Mutex::new(None), spawn_is_dud: Mutex::new(false), build: Mutex::new(26100), packages: Mutex::new(BTreeMap::new()), appx_launch: Mutex::new(BTreeMap::new()), appx_packages: Mutex::new(BTreeMap::new()), unkillable: Mutex::new(BTreeSet::new()), pids: Mutex::new(vec![]) }
         }
         /// Counts a mutating call; fails exactly once when it reaches `fail_at`.
         fn tick(&self) -> Result<(), String> {
@@ -412,6 +414,9 @@ pub mod fake {
                 };
             } else if args.iter().any(|a| a == "wm-exit") {
                 w.processes.remove("glazewm.exe");
+            } else if program.ends_with("slu-service.exe") && args.first().map(String::as_str) == Some("stop") {
+                // stopping the service lets the UI be closed for good
+                self.unkillable.lock().unwrap().remove("seelen-ui.exe");
             } else if program.ends_with("komorebic.exe") && args.first().map(String::as_str) == Some("stop") {
                 // komorebic is the CLI that stops komorebi.exe
                 w.processes.remove("komorebi.exe");
@@ -444,7 +449,9 @@ pub mod fake {
         }
         fn kill_process(&self, name: &str) -> Result<(), String> {
             self.tick()?;
-            self.world.lock().unwrap().processes.remove(name);
+            if !self.unkillable.lock().unwrap().contains(name) {
+                self.world.lock().unwrap().processes.remove(name);
+            }
             Ok(())
         }
         fn run_key_get(&self, name: &str) -> Option<String> {

@@ -17,7 +17,8 @@ pub enum Step {
     RemoveProfileBlock { tool: String, files: Vec<String> },
     SetRunKey { tool: String, name: String, command: String },
     DelRunKey { tool: String, name: String },
-    Start { tool: String, program: String, args: Vec<String>, process: Option<String> },
+    /// `stop` (program + args) is the tool's own way to quit; it is used when the start is undone.
+    Start { tool: String, program: String, args: Vec<String>, process: Option<String>, stop: Option<Vec<String>> },
     /// Stops a tool: runs `program args` if given, then kills `process` if still alive.
     /// `restart` (program + args) is used to undo the stop.
     Stop { tool: String, program: Option<String>, args: Vec<String>, process: Option<String>, restart: Option<Vec<String>> },
@@ -53,6 +54,8 @@ pub enum Undo {
     WingetInstall(String),
     RunKey { name: String, prev: Option<String> },
     Kill(String),
+    /// Stop a process the proper way (the tool's stop command first, then force) and check it is gone.
+    StopProcess { stop: Option<Vec<String>>, process: String },
     Spawn(Vec<String>),
     Wallpaper { prev: Option<String> },
 }
@@ -125,6 +128,22 @@ fn wait_for(os: &dyn Os, process: &str, want_running: bool) -> bool {
     os.process_running(process) == want_running
 }
 
+/// Stops a process for real. Some tools restart themselves when they are simply killed (a
+/// helper service keeps them alive), so the tool's own stop command runs first; then, if the
+/// process is still there, it is killed; and finally we CHECK that it is gone.
+fn stop_process(os: &dyn Os, stop: Option<&[String]>, process: &str) -> Result<(), String> {
+    if let Some((program, args)) = stop.and_then(|s| s.split_first()) {
+        os.run(program, args)?;
+    }
+    if !wait_for(os, process, false) {
+        os.kill_process(process)?;
+        if !wait_for(os, process, false) {
+            return Err(format!("{process} did not stop"));
+        }
+    }
+    Ok(())
+}
+
 fn apply(os: &dyn Os, step: &Step, undos: &mut Vec<Undo>) -> Result<(), String> {
     match step {
         Step::WingetInstall { id, .. } => {
@@ -177,9 +196,9 @@ fn apply(os: &dyn Os, step: &Step, undos: &mut Vec<Undo>) -> Result<(), String> 
             }
             Ok(())
         }
-        Step::Start { program, args, process, .. } => {
+        Step::Start { program, args, process, stop, .. } => {
             if let Some(p) = process {
-                undos.push(Undo::Kill(p.clone()));
+                undos.push(Undo::StopProcess { stop: stop.clone(), process: p.clone() });
             }
             os.spawn(program, args)?;
             match process {
@@ -192,15 +211,14 @@ fn apply(os: &dyn Os, step: &Step, undos: &mut Vec<Undo>) -> Result<(), String> 
             if let Some(r) = restart {
                 undos.push(Undo::Spawn(r.clone()));
             }
-            if let Some(p) = program {
-                os.run(p, args)?;
+            let cmd: Option<Vec<String>> = program.as_ref().map(|p| std::iter::once(p.clone()).chain(args.iter().cloned()).collect());
+            match process {
+                Some(p) => stop_process(os, cmd.as_deref(), p),
+                None => match cmd.as_deref().and_then(|c| c.split_first()) {
+                    Some((prog, a)) => os.run(prog, a).map(|_| ()),
+                    None => Ok(()),
+                },
             }
-            if let Some(p) = process {
-                if !wait_for(os, p, false) {
-                    os.kill_process(p)?;
-                }
-            }
-            Ok(())
         }
         Step::SetConfigValue { file, format, key, value, .. } => {
             let path = os.expand(file);
@@ -241,6 +259,7 @@ fn undo(os: &dyn Os, u: &Undo) -> Result<(), String> {
         Undo::RunKey { name, prev: Some(c) } => os.run_key_set(name, c),
         Undo::RunKey { name, prev: None } => os.run_key_del(name),
         Undo::Kill(p) => os.kill_process(p),
+        Undo::StopProcess { stop, process } => stop_process(os, stop.as_deref(), process),
         Undo::Wallpaper { prev: Some(p) } => os.wallpaper_set(p),
         // There was no wallpaper before: go back to the plain background color.
         Undo::Wallpaper { prev: None } => os.wallpaper_set(""),
