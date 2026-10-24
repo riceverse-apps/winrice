@@ -17,6 +17,10 @@ concurrency:
 
 jobs:
   deploy:
+    # GitHub Pages only works on public repositories (on the free plan). While the repository is
+    # private this job is skipped instead of failing; it starts working once it is made public
+    # and Pages is enabled with source "GitHub Actions" (see docs/publishing.md).
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
