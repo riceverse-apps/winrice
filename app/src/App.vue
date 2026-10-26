@@ -28,7 +28,7 @@ const route = useRoute();
   <div v-else class="shell">
     <nav class="sidebar" :aria-label="t('nav.label')">
       <div class="brand">
-        <img src="/logo-mark.svg" alt="" />
+        <img src="/logo-mark.png" alt="" />
         <span>Win<b>Rice</b></span>
       </div>
       <router-link v-for="p in pages" :key="p" class="nav-link" :to="p === 'home' ? '/' : '/' + p">
