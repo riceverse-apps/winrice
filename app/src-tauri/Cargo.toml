@@ -1,6 +1,6 @@
 [package]
 name = "winrice"
-version = "0.1.2"
+version = "0.1.3"
 description = "Customize Windows 11 with one click"
 edition = "2021"
 license = "MIT"
