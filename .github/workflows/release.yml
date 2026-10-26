@@ -40,7 +40,7 @@ jobs:
           node scripts/make-winget.mjs --version "$VERSION" \
             --url "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/$(basename "$EXE")" \
             --sha256 "$SHA"
-          cd packaging/winget/out && zip -r ../../../winget-manifests.zip manifests
+          cd packaging/winget/out && 7z a -tzip ../../../winget-manifests.zip manifests
           echo "EXE=$EXE" >> "$GITHUB_ENV"
 
       - name: Create the GitHub release
@@ -49,5 +49,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" "$EXE" "$EXE.sha256" winget-manifests.zip \
-            --title "WinRice $GITHUB_REF_NAME" \
+            --title "WinRice $GITHUB_REF_NAME" --prerelease \
             --notes "Unsigned installer: Windows SmartScreen may warn. SHA-256 is in the .sha256 file. See docs/publishing.md for the winget manifests."
