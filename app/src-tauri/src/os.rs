@@ -33,6 +33,10 @@ pub trait Os: Send + Sync {
     fn task_set_enabled(&self, name: &str, enabled: bool) -> Result<(), String>;
     /// Package family name (`Name_publisherid`) of an installed MSIX package.
     fn appx_family(&self, name: &str) -> Option<String>;
+    /// Reads a value of the current user's registry (`key` is the path under HKCU). Returns (type, data).
+    fn reg_get(&self, key: &str, name: &str) -> Option<(String, String)>;
+    fn reg_set(&self, key: &str, name: &str, kind: &str, data: &str) -> Result<(), String>;
+    fn reg_del(&self, key: &str, name: &str) -> Result<(), String>;
     fn windows_build(&self) -> u32;
     fn windows_edition(&self) -> String;
     fn data_dir(&self) -> String;
@@ -277,6 +281,27 @@ mod real {
                 .collect()
         }
 
+        fn reg_get(&self, key: &str, name: &str) -> Option<(String, String)> {
+            let out = hidden("reg", &["query".into(), format!(r"HKCU\{key}"), "/v".into(), name.into()]).output().ok()?;
+            if !out.status.success() {
+                return None;
+            }
+            crate::optimize::parse_reg_query(&String::from_utf8_lossy(&out.stdout), name)
+        }
+
+        fn reg_set(&self, key: &str, name: &str, kind: &str, data: &str) -> Result<(), String> {
+            let code = self.run(
+                "reg",
+                &["add".into(), format!(r"HKCU\{key}"), "/v".into(), name.into(), "/t".into(), kind.into(), "/d".into(), data.into(), "/f".into()],
+            )?;
+            if code == 0 { Ok(()) } else { Err(format!("reg add failed ({code})")) }
+        }
+
+        fn reg_del(&self, key: &str, name: &str) -> Result<(), String> {
+            let code = self.run("reg", &["delete".into(), format!(r"HKCU\{key}"), "/v".into(), name.into(), "/f".into()])?;
+            if code == 0 { Ok(()) } else { Err(format!("reg delete failed ({code})")) }
+        }
+
         fn windows_build(&self) -> u32 {
             self.nt_value("CurrentBuildNumber").and_then(|v| v.parse().ok()).unwrap_or(0)
         }
@@ -315,6 +340,8 @@ pub mod fake {
         pub appx: BTreeSet<String>,
         /// scheduled task full name -> enabled
         pub tasks: BTreeMap<String, bool>,
+        /// HKCU registry values: `key|name` -> (type, data)
+        pub registry: BTreeMap<String, (String, String)>,
     }
 
     pub struct FakeOs {
@@ -517,6 +544,19 @@ pub mod fake {
         }
         fn process_ids(&self, _name: &str) -> Vec<u32> {
             self.pids.lock().unwrap().clone()
+        }
+        fn reg_get(&self, key: &str, name: &str) -> Option<(String, String)> {
+            self.world.lock().unwrap().registry.get(&format!("{key}|{name}")).cloned()
+        }
+        fn reg_set(&self, key: &str, name: &str, kind: &str, data: &str) -> Result<(), String> {
+            self.tick()?;
+            self.world.lock().unwrap().registry.insert(format!("{key}|{name}"), (kind.into(), data.into()));
+            Ok(())
+        }
+        fn reg_del(&self, key: &str, name: &str) -> Result<(), String> {
+            self.tick()?;
+            self.world.lock().unwrap().registry.remove(&format!("{key}|{name}"));
+            Ok(())
         }
         fn windows_build(&self) -> u32 {
             *self.build.lock().unwrap()

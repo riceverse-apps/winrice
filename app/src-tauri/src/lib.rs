@@ -5,6 +5,7 @@ mod engine;
 mod hardware;
 mod manifest;
 mod net;
+mod optimize;
 mod os;
 mod pcinfo;
 mod profiles;
@@ -23,6 +24,8 @@ mod tests5;
 mod tests6;
 #[cfg(test)]
 mod tests7;
+#[cfg(test)]
+mod tests8;
 mod theme;
 mod themeops;
 mod widget;
@@ -562,6 +565,36 @@ fn hardware_snapshot(app: State<App>) -> hardware::Snapshot {
 }
 
 #[tauri::command(async)]
+fn optimize_status(app: State<App>) -> Vec<optimize::TweakStatus> {
+    optimize::status(&app.os)
+}
+
+#[tauri::command(async)]
+fn optimize_suggestions(app: State<App>) -> Vec<optimize::Suggestion> {
+    optimize::suggest(&app.sampler.lock().unwrap().sample())
+}
+
+#[tauri::command(async)]
+fn optimize_apply(app: State<App>, ids: Vec<String>) -> Result<Vec<optimize::TweakStatus>, String> {
+    let _guard = app.op_lock.lock().unwrap();
+    let result = optimize::apply(&app.os, &ids);
+    let detail = result.as_ref().err().cloned().or_else(|| Some(ids.join(", ")));
+    app.store.lock().unwrap().log(app.os.now(), "optimize", "optimize_apply", if result.is_ok() { "ok" } else { "rolled_back" }, detail.as_deref());
+    result?;
+    Ok(optimize::status(&app.os))
+}
+
+/// Puts the original values back for the given tweaks (all of them when the list is empty).
+#[tauri::command(async)]
+fn optimize_restore(app: State<App>, ids: Vec<String>) -> Result<Vec<optimize::TweakStatus>, String> {
+    let _guard = app.op_lock.lock().unwrap();
+    let result = optimize::restore(&app.os, &ids);
+    app.store.lock().unwrap().log(app.os.now(), "optimize", "optimize_restore", if result.is_ok() { "ok" } else { "error" }, result.as_ref().err().map(String::as_str));
+    result?;
+    Ok(optimize::status(&app.os))
+}
+
+#[tauri::command(async)]
 fn pc_info() -> Option<pcinfo::PcInfo> {
     pcinfo::read()
 }
@@ -979,6 +1012,10 @@ pub fn run() {
             sync_catalog,
             hardware_snapshot,
             pc_info,
+            optimize_status,
+            optimize_suggestions,
+            optimize_apply,
+            optimize_restore,
             list_profiles,
             save_profile,
             delete_profile,

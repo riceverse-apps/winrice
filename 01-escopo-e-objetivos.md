@@ -22,7 +22,7 @@ Ser o "painel de controle" da customização do Windows: um catálogo de ferrame
 
 - Não modifica arquivos de sistema do Windows diretamente (ex.: patch de uxtheme.dll). Só usa ferramentas de terceiros consagradas.
 - Não redistribui binários de terceiros.
-- Não é um "debloater" nem otimizador de performance (pode virar extensão futura, mas não na v1).
+- Não é um "debloater". A aba **Acelerar** oferece só ajustes leves, seguros e reversíveis para PCs fracos (somente HKCU, sem admin, com backup do valor original).
 - Não suporta Windows 10 na v1 (pode entrar depois; vários mods são exclusivos do Windows 11).
 
 ## Princípios

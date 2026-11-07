@@ -8,7 +8,7 @@ import { initAppearance } from "./composables/appearance";
 import "./styles/tokens.css";
 import "./styles/base.css";
 
-const pages = ["home", "tools", "themes", "profiles", "history", "settings"] as const;
+const pages = ["home", "tools", "themes", "optimize", "profiles", "history", "settings"] as const;
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -18,6 +18,7 @@ const router = createRouter({
     { path: "/tools/:id", name: "tool", component: () => import("./views/ToolDetailView.vue") },
     { path: "/themes", name: "themes", component: () => import("./views/ThemesView.vue") },
     { path: "/themes/:id", name: "theme", component: () => import("./views/ThemeDetailView.vue") },
+    { path: "/optimize", name: "optimize", component: () => import("./views/OptimizeView.vue") },
     { path: "/profiles", name: "profiles", component: () => import("./views/ProfilesView.vue") },
     { path: "/widget", name: "widget", component: () => import("./views/WidgetView.vue") },
     { path: "/history", name: "history", component: () => import("./views/HistoryView.vue") },

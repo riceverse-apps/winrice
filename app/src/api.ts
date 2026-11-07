@@ -1,5 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 
+export interface TweakStatus { id: string; impact: "high" | "medium" | "low"; restart: boolean; recommended: boolean; optimized: boolean; restorable: boolean }
+export interface OptimizeSuggestion { id: string; level: "high" | "medium" | "info" }
+
 export type I18nText = Record<string, string>;
 
 export interface Manifest {
@@ -182,6 +185,10 @@ export const api = {
   getGlossary: () => invoke<GlossaryTerm[]>("get_glossary"),
   hardwareSnapshot: () => invoke<Snapshot>("hardware_snapshot"),
   pcInfo: () => invoke<PcInfo | null>("pc_info"),
+  optimizeStatus: () => invoke<TweakStatus[]>("optimize_status"),
+  optimizeSuggestions: () => invoke<OptimizeSuggestion[]>("optimize_suggestions"),
+  optimizeApply: (ids: string[]) => invoke<TweakStatus[]>("optimize_apply", { ids }),
+  optimizeRestore: (ids: string[]) => invoke<TweakStatus[]>("optimize_restore", { ids }),
   widgetSettings: () => invoke<WidgetSettings>("get_widget_settings"),
   setWidgetSettings: (settings: WidgetSettings) => invoke<WidgetSaved>("set_widget_settings", { settings }),
   setTrayLabels: (open: string, widgetLabel: string, quit: string) => invoke<void>("set_tray_labels", { open, widgetLabel, quit }),

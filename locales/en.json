@@ -6,7 +6,8 @@
     "themes": "Themes",
     "profiles": "Profiles",
     "history": "History",
-    "settings": "Settings"
+    "settings": "Settings",
+    "optimize": "Speed up"
   },
   "common": {
     "comingSoon": "Coming in a later phase.",
@@ -220,7 +221,9 @@
       "pause": "Paused customizations",
       "resume": "Resumed customizations",
       "palette_apply": "Synced palette of",
-      "undo": "Undid a change to"
+      "undo": "Undid a change to",
+      "optimize_apply": "Applied speed-up tweaks",
+      "optimize_restore": "Restored original speed settings"
     },
     "status": {
       "ok": "done",
@@ -504,5 +507,109 @@
   "glossary": {
     "title": "Glossary",
     "text": "Plain-language meaning of the technical words you will see in WinRice."
+  },
+  "optimize": {
+    "text": "Make Windows lighter on a slow or older PC. Everything here can be undone, and nothing needs administrator permission.",
+    "suggestionsTitle": "Suggestions for this PC",
+    "suggestionsText": "Based on what your PC has right now. WinRice does not change these for you; they are advice.",
+    "tweaksTitle": "Safe tweaks",
+    "tweaksText": "Ticked items are the recommended set for a weak PC. Optional ones change how Windows looks, so they start unticked.",
+    "selectRecommended": "Select recommended",
+    "apply": "Apply {n} selected",
+    "applied": "Done: {n} tweak(s) applied.",
+    "restored": "Original settings are back.",
+    "restore": "Undo",
+    "restoreAll": "Restore all original settings",
+    "restartNote": "Some changes show up fully only after you sign out of Windows and back in.",
+    "failed": "Nothing was changed: {error}",
+    "needsSignOut": "needs sign-out",
+    "optional": "optional",
+    "on": "applied",
+    "impact": {
+      "high": "big help",
+      "medium": "helps",
+      "low": "small help"
+    },
+    "level": {
+      "high": "important",
+      "medium": "worth it",
+      "info": "tip"
+    },
+    "tweak": {
+      "animations": {
+        "title": "Turn off window animations",
+        "text": "Windows stops animating when windows open, close and minimize, and the taskbar stops sliding. Feels snappier on slow graphics."
+      },
+      "transparency": {
+        "title": "Turn off transparency effects",
+        "text": "Menus and the taskbar become solid instead of see-through blur, which saves graphics power."
+      },
+      "menu-delay": {
+        "title": "Open menus instantly",
+        "text": "Removes the small wait before menus open."
+      },
+      "background-apps": {
+        "title": "Stop apps running in the background",
+        "text": "Apps from the Microsoft Store stop working while you are not using them, freeing memory and processor."
+      },
+      "suggestions": {
+        "title": "Hide suggestions and ads",
+        "text": "Turns off tips, suggested apps and promotions in Start, Settings and notifications."
+      },
+      "game-dvr": {
+        "title": "Turn off Xbox Game Bar recording",
+        "text": "Stops the background game recorder, which uses processor and disk even if you never use it."
+      },
+      "startup-delay": {
+        "title": "Start programs right after sign-in",
+        "text": "Removes the artificial wait Windows adds before starting your startup programs, so the desktop is ready sooner."
+      },
+      "thumbnails": {
+        "title": "Show icons instead of thumbnails",
+        "text": "Folders show plain icons instead of picture previews. Much lighter on slow disks, but you lose previews."
+      },
+      "drag-contents": {
+        "title": "Do not show window contents while dragging",
+        "text": "Dragging a window moves only its outline, which is lighter to draw."
+      }
+    },
+    "suggestion": {
+      "ram_low": {
+        "title": "Very little memory (4 GB or less)",
+        "text": "This is the biggest limit on speed. Adding RAM, if the PC allows, is the upgrade that helps most. Close browser tabs and programs you are not using."
+      },
+      "ram_ok": {
+        "title": "Modest memory (8 GB or less)",
+        "text": "Fine for everyday use, but keep few programs open at once. The tweaks below help free some of it."
+      },
+      "ram_busy": {
+        "title": "Memory is almost full right now",
+        "text": "Close programs and browser tabs you do not need, or restart the PC to clear it."
+      },
+      "disk_low": {
+        "title": "The system drive is almost full",
+        "text": "Windows slows down with less than 15% free. Remove big files and programs you do not use (Settings > System > Storage)."
+      },
+      "restart": {
+        "title": "The PC has been on for over a week",
+        "text": "Restart it: it clears memory and finishes pending updates."
+      },
+      "heavy_tools": {
+        "title": "Be picky with heavy customization tools",
+        "text": "Animated wallpapers, widget engines and full shell replacements use memory all the time. On this PC prefer light options such as a plain theme, Starship and Windows Terminal."
+      },
+      "startup_apps": {
+        "title": "Review the programs that start with Windows",
+        "text": "Open Settings > Apps > Startup and turn off what you do not need right at sign-in. This is often the biggest boot-time win."
+      },
+      "power_plan": {
+        "title": "Use a performance power mode",
+        "text": "In Settings > System > Power, choose the best performance mode while plugged in (laptops use more battery)."
+      },
+      "storage_sense": {
+        "title": "Turn on Storage Sense",
+        "text": "It cleans temporary files for you. Settings > System > Storage > Storage Sense."
+      }
+    }
   }
 }

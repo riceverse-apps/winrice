@@ -6,7 +6,8 @@
     "themes": "Temas",
     "profiles": "Perfis",
     "history": "Histórico",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "optimize": "Acelerar"
   },
   "common": {
     "comingSoon": "Chega em uma fase futura.",
@@ -220,7 +221,9 @@
       "pause": "Pausou as customizações",
       "resume": "Retomou as customizações",
       "palette_apply": "Sincronizou a paleta de",
-      "undo": "Desfez uma mudança em"
+      "undo": "Desfez uma mudança em",
+      "optimize_apply": "Aplicou ajustes de velocidade",
+      "optimize_restore": "Restaurou as configurações de velocidade"
     },
     "status": {
       "ok": "concluído",
@@ -504,5 +507,109 @@
   "glossary": {
     "title": "Glossário",
     "text": "O significado, em linguagem simples, das palavras técnicas que você vai ver no WinRice."
+  },
+  "optimize": {
+    "text": "Deixe o Windows mais leve em um PC lento ou antigo. Tudo aqui pode ser desfeito e nada pede permissão de administrador.",
+    "suggestionsTitle": "Sugestões para este PC",
+    "suggestionsText": "Com base no que seu PC tem agora. O WinRice não muda isso por você; são conselhos.",
+    "tweaksTitle": "Ajustes seguros",
+    "tweaksText": "Os itens marcados são o conjunto recomendado para PC fraco. Os opcionais mudam a aparência do Windows, por isso começam desmarcados.",
+    "selectRecommended": "Marcar os recomendados",
+    "apply": "Aplicar {n} selecionados",
+    "applied": "Pronto: {n} ajuste(s) aplicado(s).",
+    "restored": "As configurações originais voltaram.",
+    "restore": "Desfazer",
+    "restoreAll": "Restaurar todas as configurações originais",
+    "restartNote": "Algumas mudanças só aparecem por completo depois de sair do Windows e entrar de novo.",
+    "failed": "Nada foi alterado: {error}",
+    "needsSignOut": "pede sair e entrar",
+    "optional": "opcional",
+    "on": "aplicado",
+    "impact": {
+      "high": "ajuda muito",
+      "medium": "ajuda",
+      "low": "ajuda pouco"
+    },
+    "level": {
+      "high": "importante",
+      "medium": "vale a pena",
+      "info": "dica"
+    },
+    "tweak": {
+      "animations": {
+        "title": "Desligar animações de janelas",
+        "text": "O Windows para de animar ao abrir, fechar e minimizar janelas, e a barra de tarefas deixa de deslizar. Fica mais ágil em placas de vídeo fracas."
+      },
+      "transparency": {
+        "title": "Desligar efeitos de transparência",
+        "text": "Menus e barra de tarefas ficam sólidos em vez de desfocados e transparentes, o que poupa a placa de vídeo."
+      },
+      "menu-delay": {
+        "title": "Abrir menus na hora",
+        "text": "Tira a pequena espera antes de os menus abrirem."
+      },
+      "background-apps": {
+        "title": "Impedir apps de rodar em segundo plano",
+        "text": "Apps da Microsoft Store deixam de trabalhar enquanto você não os usa, liberando memória e processador."
+      },
+      "suggestions": {
+        "title": "Esconder sugestões e anúncios",
+        "text": "Desliga dicas, apps sugeridos e propagandas no Iniciar, Configurações e notificações."
+      },
+      "game-dvr": {
+        "title": "Desligar a gravação do Xbox Game Bar",
+        "text": "Para o gravador de jogos em segundo plano, que gasta processador e disco mesmo sem você usar."
+      },
+      "startup-delay": {
+        "title": "Abrir programas logo após entrar",
+        "text": "Tira a espera artificial que o Windows coloca antes de abrir os programas de inicialização, deixando a área de trabalho pronta mais cedo."
+      },
+      "thumbnails": {
+        "title": "Mostrar ícones em vez de miniaturas",
+        "text": "As pastas mostram ícones simples em vez de prévias das imagens. Bem mais leve em discos lentos, mas você perde as prévias."
+      },
+      "drag-contents": {
+        "title": "Não mostrar o conteúdo ao arrastar janelas",
+        "text": "Ao arrastar uma janela, só o contorno se move, o que é mais leve de desenhar."
+      }
+    },
+    "suggestion": {
+      "ram_low": {
+        "title": "Pouca memória (4 GB ou menos)",
+        "text": "É o maior limite de velocidade. Colocar mais RAM, se o PC permitir, é o upgrade que mais ajuda. Feche abas do navegador e programas que não está usando."
+      },
+      "ram_ok": {
+        "title": "Memória modesta (8 GB ou menos)",
+        "text": "Dá para o dia a dia, mas mantenha poucos programas abertos ao mesmo tempo. Os ajustes abaixo ajudam a liberar um pouco."
+      },
+      "ram_busy": {
+        "title": "A memória está quase cheia agora",
+        "text": "Feche programas e abas que não precisa, ou reinicie o PC para limpar."
+      },
+      "disk_low": {
+        "title": "O disco do sistema está quase cheio",
+        "text": "O Windows fica lento com menos de 15% livre. Apague arquivos grandes e programas que não usa (Configurações > Sistema > Armazenamento)."
+      },
+      "restart": {
+        "title": "O PC está ligado há mais de uma semana",
+        "text": "Reinicie: isso limpa a memória e conclui atualizações pendentes."
+      },
+      "heavy_tools": {
+        "title": "Escolha com cuidado as ferramentas pesadas",
+        "text": "Papéis de parede animados, motores de widgets e substitutos completos do shell usam memória o tempo todo. Neste PC prefira opções leves, como um tema simples, Starship e Windows Terminal."
+      },
+      "startup_apps": {
+        "title": "Revise os programas que iniciam com o Windows",
+        "text": "Abra Configurações > Aplicativos > Inicialização e desligue o que não precisa logo ao entrar. Costuma ser o maior ganho no tempo de inicialização."
+      },
+      "power_plan": {
+        "title": "Use um modo de energia de desempenho",
+        "text": "Em Configurações > Sistema > Energia, escolha o modo de melhor desempenho ligado na tomada (notebooks gastam mais bateria)."
+      },
+      "storage_sense": {
+        "title": "Ligue o Sensor de Armazenamento",
+        "text": "Ele limpa arquivos temporários sozinho. Configurações > Sistema > Armazenamento > Sensor de Armazenamento."
+      }
+    }
   }
 }
