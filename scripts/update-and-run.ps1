@@ -65,8 +65,12 @@ $head = (git rev-parse HEAD).Trim()
 $diff = (git diff HEAD | Out-String)
 $sha = [System.Security.Cryptography.SHA256]::Create()
 $fingerprint = $head + ":" + ([BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($diff))) -replace "-", "")
+# The stamp also records the .exe's timestamp: if something else rebuilt it since (for example a
+# plain `cargo build --release`, which produces an .exe without the UI that tries to open
+# http://localhost:1420), the stamp no longer matches and WinRice is rebuilt the right way.
+function ExeStamp { if (Test-Path $exe) { (Get-Item $exe).LastWriteTimeUtc.Ticks } else { 0 } }
 $last = if (Test-Path $stampFile) { (Get-Content $stampFile -Raw).Trim() } else { "" }
-$needBuild = $Force -or -not (Test-Path $exe) -or ($fingerprint -ne $last)
+$needBuild = $Force -or -not (Test-Path $exe) -or ("$fingerprint|$(ExeStamp)" -ne $last)
 
 # ---- 3. close a running WinRice
 $running = Get-Process winrice -ErrorAction SilentlyContinue
@@ -89,7 +93,7 @@ if ($needBuild) {
   Step "Building WinRice (first time takes a few minutes, later ones are quick)"
   npm --prefix app run tauri -- build --no-bundle 2>&1 | ForEach-Object { if ($_ -match "error|warning: unused|Finished|Built") { Write-Host "    $_" } }
   if ($LASTEXITCODE -ne 0 -or -not (Test-Path $exe)) { Fail "The build failed. Run: npm --prefix app run tauri -- build --no-bundle   to see the full output." }
-  Set-Content $stampFile $fingerprint
+  Set-Content $stampFile "$fingerprint|$(ExeStamp)"
 } else {
   Step "Nothing changed since the last build"
 }
